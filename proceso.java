@@ -9,10 +9,6 @@ import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
-
-
-
-
 public class proceso {
     
     private int id;
@@ -34,35 +30,53 @@ public class proceso {
     }
 
 
-   public static void main (String args[]) {
+    public static void main (String args[]) {
+	// Sintaxis: java proceso <nombre_ArchivoXML>
 	
-       DocumentBuilderFactory dbf =  DocumentBuilderFactory.newInstance();
+	if(args.length!= 1){
+	    System.err.println("Uso: java proceso <nombre_ArchivoXML>");
+	    System.exit(-1);
+	}
+
+	DocumentBuilderFactory dbf =  DocumentBuilderFactory.newInstance();
        
-       try {
-	   DocumentBuilder db = dbf.newDocumentBuilder();
-	   File entrada =  new File("/home/giuseppe/Desktop/proyecto-linux/Entradas/entrada1.xml");
-	   Document doc = db.parse(entrada);
-	   Element test = doc.getDocumentElement();
+	try {
+	    DocumentBuilder db = dbf.newDocumentBuilder();
+	    File entrada =  new File(args[0]);
+	    Document doc = db.parse(entrada);
+	    // Nombre del tag principal
+	    //Element root = doc.getDocumentElement();
 
-	   NodeList nList = doc.getElementsByTagName("proceso");
+	    // Lista de procesos 
+	    NodeList listaProc = doc.getElementsByTagName("proceso");
+	    System.out.println("Cantidad de procesos:" + listaProc.getLength());
+	    
+	    // Recorrer los procesos 
+	    for(int i=0; i<listaProc.getLength(); i++){
+		Node proceso= listaProc.item(i);
+		if(proceso.getNodeType()== Node.ELEMENT_NODE){
+		    Element proc= (Element) proceso;
+		    NodeList rafagas= proc.getChildNodes();
+		    //NodeList lista = elemento.getElementsByTagName(tag).item(0).getChildNodes();
+		    //Node valor = (Node) lista.item(0);
+		    //return valor.getNodeValue();
+		    //System.out.println(getTagValue("proceso",proc));
+		}
+		
+	    }
+	    //Element ele = (Element) nList.item(1);
 
-
-	   Element ele = (Element) nList.item(1);
-
-	   String pr =  getTextValue(ele,"cpu");
-	   System.out.println(pr);
+	    //String pr =  getTextValue(ele,"cpu");
+	    //System.out.println(test.getNodeName());
 			      
-
-
-
 	   
-
-	   
-       } catch (Exception e) {
-		e.printStackTrace();
+	} catch (Exception e) {
+	    System.err.println("Error al abrir el archivo");
+	    //e.printStackTrace();
    
-       }
-   }       
+	}
+    }       
+>>>>>>> 05b7926528619af8215b62c33bde11c9c16d2d92
 
 }
 
