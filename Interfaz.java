@@ -30,6 +30,7 @@ public class Interfaz {
 		    rafagasL.add(Integer.parseInt(cpuR));
 		} else {
 		    System.out.println("Las rafagas de CPU deben ser enteros > 0");
+		    
 		}
 	    }
 	}
@@ -70,11 +71,17 @@ public class Interfaz {
 		proc_e.setRafagas_cpu(rafagasL);
 		proc_e.setPrioridad(0);
 
+		/* Aqui estoy immprimiendo los datos de cada proceso, no lo borre por si acaso lo 
+		   llegan a necesitar, sino pueden borrarlo tranquilamente
+
 		System.out.println("El tiempo llegada es "+proc_e.getTiempo_llegada());
 		for(int ii=0; ii<proc_e.getRafagas_cpu().size();ii++) {
 		    System.out.println(proc_e.getRafagas_cpu().get(ii));
 
-		}
+		 }
+		*/
+
+
 		// aqui deberia guardarse el proc
 	    }
 	}
@@ -94,7 +101,7 @@ public class Interfaz {
 	
 	    cargarProcesos(listaProc);
 	
-	    	} catch (Exception e) {
+	} catch (Exception e) {
 	    //System.err.println("Error al abrir el archivo");
 	    e.printStackTrace();
 	    
@@ -109,9 +116,9 @@ public class Interfaz {
 		System.err.println("Uso: java proceso <nombre_ArchivoXML>");
 		System.exit(-1);
 	    }
-	
+	    
 	    parserXML(args[0]);
- 
+	    
 	} catch (Exception e) {
 	    System.err.println("Error al abrir el archivo");
 	    //e.printStackTrace();
