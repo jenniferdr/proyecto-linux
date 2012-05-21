@@ -1,7 +1,7 @@
-Resumen de como usar lo que nos importa de DOM
+#Resumen de como usar lo que nos importa de DOM
 ***
 
-#El paquete javax.xml.parsers
+##El paquete javax.xml.parsers
 Este paquete es el punto de partida para usar DOM en Java. 
 Contiene dos clases fundamentales: DocumentBuilderFactory y DocumentBuilder.
 
@@ -35,7 +35,7 @@ org.xml.sax.InputSource.En nuestro caso estamos usando el java.io.File
 
 (Se puede tener un manejador de errores, investigar)
 
-# Recorrer el documento como un  arbolito bello y hermoso
+## Recorrer el documento como un  arbolito bello y hermoso
  
 Ahora se puede recorrer el arbol creado por el parser a traves de sus nodos. 
 Un documento sólo puede tener un elemento hijo que es el elemento raíz del documento.
@@ -59,7 +59,7 @@ e item(int index) que devuelve un Node de la lista por su índice.
 Un documento es también un nodo: la interfaz Document extiende de la interfaz Node, es decir que Node tiene 
 mas atributos y metodos pero que rayos tiene Node??
 
-#La interfaz Node
+##La interfaz Node
 
 Todos los objetos de un árbol DOM son nodos. Todos los nodos tienen un campo ownerDocument que referencia
 al documento que lo contiene, a excepción de los documentos, cuyo ownerDocument es null. La mayoría de
