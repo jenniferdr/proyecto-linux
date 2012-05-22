@@ -73,7 +73,7 @@ public class Interfaz {
 
 		/* Aqui estoy immprimiendo los datos de cada proceso, no lo borre por si acaso lo 
 		   llegan a necesitar, sino pueden borrarlo tranquilamente
-
+		
 		System.out.println("El tiempo llegada es "+proc_e.getTiempo_llegada());
 		for(int ii=0; ii<proc_e.getRafagas_cpu().size();ii++) {
 		    System.out.println(proc_e.getRafagas_cpu().get(ii));
@@ -124,5 +124,21 @@ public class Interfaz {
 	    //e.printStackTrace();
 	    
 	}
+
+	// Prueba de tiempo.
+
+	Tiempo t = new Tiempo();
+	new Contador(t);
+	
+	int i =-100000000;
+	while(true) {
+	    
+	    if (i==100000000) {
+		i = -100000000;
+		System.out.println("Tiempo es "+t.getTiempo());
+	    }
+	    i++;
+	}
+	
     }
 }       
