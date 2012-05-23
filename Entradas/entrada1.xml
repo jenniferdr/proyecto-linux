@@ -1,24 +1,18 @@
 <Simulador_Planificacion>
   <proceso tiempo_llegada="10">
-    <rafaga>
-      <cpu ciclos="5"/>
-      <cpu ciclos="6"/>
-      <cpu ciclos="3"/>
+    <cpu ciclos="5"/>
+    <cpu ciclos="6"/>
+    <cpu ciclos="3"/>
       <cpu ciclos="1"/>
-    </rafaga>
   </proceso>
   <proceso tiempo_llegada="4">
-    <rafaga>
-      <cpu ciclos="3"/>
-      <cpu ciclos="2"/>
-      <cpu ciclos="5"/>
-      <cpu ciclos="7"/>
-    </rafaga>
+    <cpu ciclos="3"/>
+    <cpu ciclos="2"/>
+    <cpu ciclos="5"/>
+    <cpu ciclos="7"/>
   </proceso>  
   <proceso tiempo_llegada="1">
-    <rafaga>
-      <cpu ciclos="3"/>
-      <cpu ciclos="1"/>
-    </rafaga>
+    <cpu ciclos="3"/>
+    <cpu ciclos="1"/>
   </proceso>
 </Simulador_Planificacion>
