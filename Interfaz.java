@@ -183,18 +183,20 @@ public class Interfaz {
 
 	// Prueba de tiempo.
 
-	// Tiempo t = new Tiempo();
-	// new Contador(t);
-	
-	// int i =-100000000;
-	// while(true) {
+	Tiempo t = new Tiempo();
+	new Contador(t);
+        new PlanificadorLargo(t,1);
+
+
+	int i =-100000000;
+	while(true) {
 	    
-	//     if (i==100000000) {
-	// 	i = -100000000;
-	// 	System.out.println("Tiempo es "+t.getTiempo());
-	//     }
-	//     i++;
-	// }
+	    if (i==100000000) {
+		i = -100000000;
+		System.out.println("Desde Interfaz Tiempo es "+t.getTiempo());
+	    }
+	    i++;
+	}
 	
     }
 }       
