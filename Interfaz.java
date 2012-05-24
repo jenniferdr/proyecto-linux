@@ -3,9 +3,15 @@ import java.io.*;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.swing.*;
+import java.awt.*;
 
 public class Interfaz {
 
+    public static Caja cajaLargo;
+    public static Caja cajaCorto;
+    public static Caja cajaDisco;
+    
     // aqui deberia ir donde se van a guardar los procesos
     static int nprocesos = -1;
     static Proceso [] est_procesos; 
@@ -163,6 +169,59 @@ public class Interfaz {
 	    
 	}
     }
+
+    private static void graficas(){
+	JFrame f = new JFrame();
+	Container container = f.getContentPane();
+	container.setLayout(new GridBagLayout());
+	((JPanel)container).setBorder(BorderFactory.createTitledBorder("Simulador del Linux-Kernel"));
+	GridBagConstraints c = new GridBagConstraints();
+
+	JToolBar toolbar = new JToolBar();
+	for (int i = 0; i<10; i++)
+	    toolbar.add(new JButton("<" + i + ">"));
+
+	f.setSize(800,600);
+	f.setTitle("Simulador del Linux-Kernel");
+	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	c.weightx = 1.0; 
+	c.weighty = 0.0;
+
+	c.fill = GridBagConstraints.NONE;
+	c.gridx = 0; 
+	c.gridy = 1;
+	c.gridwidth = 1; 
+	c.gridheight = 1;
+	c.anchor = GridBagConstraints.WEST;
+	
+	JLabel mensajito = new JLabel("");
+	container.add(mensajito,c);
+	while (true){
+	    while(cajaCorto.empty()){
+		try{
+		    Thread.currentThread().sleep(100);
+		}
+		catch(InterruptedException ie){}
+	    }
+	    f.setVisible(true);
+	    container.remove(mensajito);
+	    mensajito = new JLabel(cajaCorto.pop());
+	    container.add(mensajito,c);
+	}
+	// container.add(new JLabel("Hola!"),c);
+	// c.gridx = 2;
+	// c.fill = GridBagConstraints.NONE;
+	// c.anchor = GridBagConstraints.CENTER;
+	// container.add(new JLabel("Caja2"),c);
+	
+	// c.gridx = 4;
+	// c.fill = GridBagConstraints.NONE;
+	// c.gridwidth = GridBagConstraints.RELATIVE;
+	// c.anchor = GridBagConstraints.EAST;
+	// container.add(new JLabel("Caja3"),c);
+	
+    }
     
     public static void main (String args[]){
 	
@@ -185,11 +244,16 @@ public class Interfaz {
 
 	Tiempo t = new Tiempo();
 	new Contador(t);
+
+	cajaLargo = new Caja();	
+	cajaCorto = new Caja();	
+	cajaDisco = new Caja();
+
 	Disco disco = new Disco(t);
 	new PlanificadorLargo(t,1);
-	new PlanificadorCorto(t,1,disco);
+	new PlanificadorCorto(t,1,disco,cajaCorto);
 
-
+	graficas();
 	while(true) {
 	    int i = t.getTiempo();
 	    while(t.getTiempo() < i + 1){
