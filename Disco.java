@@ -24,12 +24,16 @@ public class Disco implements Runnable{
 		acceso_disco = colaBloqueados.get(0);
 		colaBloqueados.remove(0);
 		
-		/* Se hace bussy waiting a que termine el ciclo */
-		int aux = t.getTiempo();
-		do {
-		    aux = t.getTiempo() - aux;
-		} while(aux != cicloIO);
-		
+		/* Se duerme a esperar a que termine el ciclo */
+		int tiempo = t.getTiempo();
+		while(t.getTiempo() < tiempo + cicloIO){
+		    try{
+			Thread.currentThread().sleep(200*cicloIO);
+			//Nota: Esto es inconveniente porque hace necesario saber 
+			//que tan rapido avanza la simulacion. 
+		    }
+		    catch(InterruptedException ie){}
+		}		
 		/*El proceso esta listo para salir, queda de parte del planificador
 		 * de corto plazo darse cuenta */
 		acceso_disco = null;
