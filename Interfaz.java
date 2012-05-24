@@ -185,20 +185,21 @@ public class Interfaz {
 
 	Tiempo t = new Tiempo();
 	new Contador(t);
-        new PlanificadorLargo(t,1);
+	Disco disco = new Disco(t);
+	new PlanificadorLargo(t,1);
+	new PlanificadorCorto(t,1,disco);
 
 
-	int i =-100000000;
 	while(true) {
-	    
-	    if (i==100000000) {
-		i = -100000000;
-		if(t.getTiempo()%2 != 0) {
-		System.out.println("Desde Interfaz Tiempo es impar "+t.getTiempo());
-		}
+	    int i = t.getTiempo();
+	    while(t.getTiempo() < i + 1){
+		try{
+		    Thread.currentThread().sleep(100);
+	    	}
+	    	catch(InterruptedException ie){}
 	    }
-	    i++;
-	}
-	
-    }
+	    
+	    System.out.println("Desde Interfaz Tiempo es "+t.getTiempo());
+	}	
+    }   
 }       
