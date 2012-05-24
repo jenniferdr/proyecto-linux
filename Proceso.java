@@ -85,6 +85,13 @@ public class Proceso {
     public String getEstado() {
 	return estado;
     }
+
+    public boolean equals(Proceso proceso) {
+	if (this.id == proceso.id)
+	    return true;
+	else 
+	    return false;
+    }
     
 }
 

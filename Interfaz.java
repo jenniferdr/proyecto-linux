@@ -185,12 +185,14 @@ public class Interfaz {
 
 	Tiempo t = new Tiempo();
 	new Contador(t);
-        new PlanificadorLargo(t,1);
+	Disco disco = new Disco(t);
+	new PlanificadorLargo(t,1);
+	new PlanificadorCorto(t,1,disco);
 
 
 	int i =-100000000;
 	while(true) {
-	    
+	
 	    if (i==100000000) {
 		i = -100000000;
 		System.out.println("Desde Interfaz Tiempo es "+t.getTiempo());
