@@ -193,7 +193,9 @@ public class Interfaz {
 	    
 	    if (i==100000000) {
 		i = -100000000;
-		System.out.println("Desde Interfaz Tiempo es "+t.getTiempo());
+		if(t.getTiempo()%2 != 0) {
+		System.out.println("Desde Interfaz Tiempo es impar "+t.getTiempo());
+		}
 	    }
 	    i++;
 	}
