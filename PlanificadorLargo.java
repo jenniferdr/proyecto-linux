@@ -1,25 +1,30 @@
 public class PlanificadorLargo implements Runnable{
     Tiempo t;
     int id;
+    Caja caja;
     
-    PlanificadorLargo(Tiempo tiempo,int id){
+    PlanificadorLargo(Tiempo tiempo,int id, Caja caja){
 	this.t=tiempo;
 	this.id=id;
+	this.caja = caja;
 	new Thread(this,"PlanificadorLargo").start();
     }
 
     public void run(){
-
-	int i =-100000000;
-	while(true) {
-	    
-	    if (i==-100000000) {
-		i = -100000000;
-		if(t.getTiempo()%2 == 0) {
-		System.out.println("Desde Planif Tiempo es par "+t.getTiempo());
+	int quantum = 23; 
+	int tiempo;
+	while(true){
+	    tiempo = t.getTiempo();
+	    while(t.getTiempo() < tiempo + quantum){
+		try{
+		    Thread.currentThread().sleep(100);
 		}
+		catch(InterruptedException ie){}
 	    }
-	    i++;
+	    
+	    String mensaje = "Planificador largo: tiempo: "+ String.valueOf(t.getTiempo());
+	    caja.push(mensaje);
+	    
 	}
     }
 }

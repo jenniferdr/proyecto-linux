@@ -12,6 +12,8 @@ public class Interfaz {
     public static Caja cajaCorto;
     public static Caja cajaDisco;
     
+    private static Tiempo t;
+    
     // aqui deberia ir donde se van a guardar los procesos
     static int nprocesos = -1;
     static Proceso [] est_procesos; 
@@ -188,40 +190,51 @@ public class Interfaz {
 	c.weightx = 1.0; 
 	c.weighty = 0.0;
 
-	c.fill = GridBagConstraints.NONE;
-	c.gridx = 0; 
-	c.gridy = 1;
-	c.gridwidth = 1; 
-	c.gridheight = 1;
-	c.anchor = GridBagConstraints.WEST;
 	
-	JLabel mensajito = new JLabel("");
-	container.add(mensajito,c);
-	while (true){
-	    while(cajaCorto.empty()){
-		try{
-		    Thread.currentThread().sleep(100);
-		}
-		catch(InterruptedException ie){}
-	    }
-	    f.setVisible(true);
-	    container.remove(mensajito);
-	    mensajito = new JLabel(cajaCorto.pop());
-	    container.add(mensajito,c);
+	JLabel mensajeCorto = new JLabel("");
+	container.add(mensajeCorto,c);
+	JLabel tiempo = new JLabel("");
+	container.add(tiempo);
+	JLabel mensajeLargo = new JLabel("");
+	while (true){	    
+	     if (!(cajaCorto.empty())){
+		 c.fill = GridBagConstraints.NONE;
+		 c.gridx = 0; 
+		 c.gridy = 1;
+		 c.gridwidth = 1; 
+		 c.gridheight = 1;
+		 c.anchor = GridBagConstraints.WEST;
+ 
+		 f.setVisible(true);
+		 container.remove(mensajeCorto);
+		 mensajeCorto = new JLabel(cajaCorto.pop());
+		 container.add(mensajeCorto,c);
+	     }
+	     if (!(cajaLargo.empty())){
+		 c.gridy = 0;
+		 c.gridx = 2;
+		 c.fill = GridBagConstraints.NONE;
+		 c.anchor = GridBagConstraints.CENTER;
+		 
+		 f.setVisible(true);
+		 container.remove(mensajeLargo);
+		 mensajeLargo = new JLabel(cajaLargo.pop());
+		 container.add(mensajeLargo,c);
+	     }
+
+	     c.gridy = 1;
+	     c.gridx = 4;
+	     c.fill = GridBagConstraints.NONE;
+	     c.gridwidth = GridBagConstraints.RELATIVE;
+	     c.anchor = GridBagConstraints.EAST;
+	     
+	     f.setVisible(true);
+	     container.remove(tiempo);
+	     tiempo = new JLabel(String.valueOf(t.getTiempo()));
+	     container.add(tiempo,c);
 	}
-	// container.add(new JLabel("Hola!"),c);
-	// c.gridx = 2;
-	// c.fill = GridBagConstraints.NONE;
-	// c.anchor = GridBagConstraints.CENTER;
-	// container.add(new JLabel("Caja2"),c);
 	
-	// c.gridx = 4;
-	// c.fill = GridBagConstraints.NONE;
-	// c.gridwidth = GridBagConstraints.RELATIVE;
-	// c.anchor = GridBagConstraints.EAST;
-	// container.add(new JLabel("Caja3"),c);
-	
-    }
+    }	
     
     public static void main (String args[]){
 	
@@ -242,28 +255,17 @@ public class Interfaz {
 
 	// Prueba de tiempo.
 
-	Tiempo t = new Tiempo();
+	t = new Tiempo();
 	new Contador(t);
 
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
 	cajaDisco = new Caja();
-
+	
 	Disco disco = new Disco(t);
-	new PlanificadorLargo(t,1);
+	new PlanificadorLargo(t,1,cajaLargo);
 	new PlanificadorCorto(t,1,disco,cajaCorto);
 
 	graficas();
-	while(true) {
-	    int i = t.getTiempo();
-	    while(t.getTiempo() < i + 1){
-		try{
-		    Thread.currentThread().sleep(100);
-	    	}
-	    	catch(InterruptedException ie){}
-	    }
-	    
-	    System.out.println("Desde Interfaz Tiempo es "+t.getTiempo());
-	}	
-    }   
-}       
+    }	
+}   

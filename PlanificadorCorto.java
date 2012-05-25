@@ -36,10 +36,10 @@ public class PlanificadorCorto implements Runnable{
 	    	}
 	    	catch(InterruptedException ie){}
 	    }
-	    String mensaje = "Paso un quantum del planificador corto en el tiempo: "+ String.valueOf(t.getTiempo());
+
+	    String mensaje = "Planificador corto. Tiempo: "+ String.valueOf(t.getTiempo());
 	    caja.push(mensaje);
-	    //	    System.out.println("El Planificador de corto plazo anuncia que" + 
-	    //		       " expiro un quantum. Tiempo ="+t.getTiempo());
+
 	    //Aqui se envia ese proceso a Disco	    
 	}
     }
