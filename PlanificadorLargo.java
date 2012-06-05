@@ -21,10 +21,9 @@ public class PlanificadorLargo implements Runnable{
 		}
 		catch(InterruptedException ie){}
 	    }
-	    
+
 	    String mensaje = "Planificador largo: tiempo: "+ String.valueOf(t.getTiempo());
 	    caja.push(mensaje);
-	    
 	}
     }
 }
