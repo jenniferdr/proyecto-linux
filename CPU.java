@@ -11,8 +11,12 @@ public class CPU {
 	this.proceso_actual = proc;
     }
 
+    public Proceso get_proc(){
+	return this.proceso_actual;
+    }
+
     public void usar_cpu(){
-	System.out.print("Proceso usando CPU:");
-	System.out.println(proceso_actual.getId());
+	//System.out.print("Proceso usando CPU:");
+	//System.out.println(proceso_actual.getId());
     }
 }

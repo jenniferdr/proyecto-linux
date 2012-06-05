@@ -66,7 +66,30 @@ public class PlanificadorCorto implements Runnable{
      * es que nuestro simulador necesita hacer la llamada bloqueante en nombre del 
      * proceso que se planifico. Para esto devolvemos el proceso*/
     public Proceso schedule() {
+	//Desabilitar interrupciones y revisar si la interrupcion fue en hecha 
+	// durante una tarea atomica
+	calcular_stuff();
+	Proceso prev = cpu.get_proc();
+	//Proceso nuevo = runqueue.escoger_proceso(); 
+	/*
+	if (!(prev.equals(nuevo)))
+	    cambio_contexto(prev,nuevo);
+	*/
+	//Habilitar interrupciones 
+	//return nuevo;
 	return (Proceso) null;
+    }
+
+    private void cambio_contexto(Proceso prev, Proceso nuevo){
+	try{
+	    Thread.currentThread().sleep(100);
+	    cpu.set_proc(nuevo);
+	}
+	catch(InterruptedException ie){}
+    }
+
+    private void calcular_stuff(){
+	return;
     }
 
     /*Algoritmo de balance de carga*/

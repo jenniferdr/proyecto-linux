@@ -43,6 +43,11 @@ public class Runqueue{
 	arrays[0] = new Prio_array_t();
 	arrays[1] = new Prio_array_t();
     }
+    
+    public Proceso escoger_proceso(){
+	return (Proceso) null;
+    }
+    
 }
 
 @SuppressWarnings("unchecked")
