@@ -6,6 +6,7 @@
 import java.util.*;
 import java.io.*;
 
+/*Falta calcular el sleep_avg cada vez que se mueve un proceso y shed_tic*/
 
 public class Proceso {
     
@@ -13,7 +14,12 @@ public class Proceso {
     private int tiempo_llegada;
     private int tiempo_espera;
     private LinkedList<Integer> rafagas_cpu;
-    private int prioridad;
+    private static final int static_prio=0;
+    private int prio;
+    /* Tiempo que el proceso ha dormido menos el que ha consumido en CPU*/
+    private int sleep_avg;
+    private static final int MAX_SLEEP_AVG=70;
+    private int MAX_BONUS=10;
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
 
@@ -36,6 +42,12 @@ public class Proceso {
 	this.rafagas_cpu = rafagas_cpu;
 	this.prioridad = prioridad;
 	this.estado = estado;
+    }
+
+    public void effective_prio(){
+	int current_bonus= this.sleep_avg * MAX_BONUS/ MAX_SLEEP_AVG;
+	int bonus= current_bonus - MAX_BONUS /2;
+	this.prio= this.static_prio - bonus;
     }
 
     public void setId(int id) {
