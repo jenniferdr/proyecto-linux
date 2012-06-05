@@ -3,9 +3,17 @@ import java.io.*;
 import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.swing.*;
+import java.awt.*;
 
 public class Interfaz {
 
+    public static Caja cajaLargo;
+    public static Caja cajaCorto;
+    public static Caja cajaDisco;
+    
+    private static Tiempo t;
+    
     // aqui deberia ir donde se van a guardar los procesos
     static int nprocesos = -1;
     static Proceso [] est_procesos; 
@@ -163,6 +171,70 @@ public class Interfaz {
 	    
 	}
     }
+
+    private static void graficas(){
+	JFrame f = new JFrame();
+	Container container = f.getContentPane();
+	container.setLayout(new GridBagLayout());
+	((JPanel)container).setBorder(BorderFactory.createTitledBorder("Simulador del Linux-Kernel"));
+	GridBagConstraints c = new GridBagConstraints();
+
+	JToolBar toolbar = new JToolBar();
+	for (int i = 0; i<10; i++)
+	    toolbar.add(new JButton("<" + i + ">"));
+
+	f.setSize(800,600);
+	f.setTitle("Simulador del Linux-Kernel");
+	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	c.weightx = 1.0; 
+	c.weighty = 0.0;
+
+	
+	JLabel mensajeCorto = new JLabel("");
+	container.add(mensajeCorto,c);
+	JLabel tiempo = new JLabel("");
+	container.add(tiempo);
+	JLabel mensajeLargo = new JLabel("");
+	while (true){	    
+	     if (!(cajaCorto.empty())){
+		 c.fill = GridBagConstraints.NONE;
+		 c.gridx = 0; 
+		 c.gridy = 1;
+		 c.gridwidth = 1; 
+		 c.gridheight = 1;
+		 c.anchor = GridBagConstraints.WEST;
+ 
+		 f.setVisible(true);
+		 container.remove(mensajeCorto);
+		 mensajeCorto = new JLabel(cajaCorto.pop());
+		 container.add(mensajeCorto,c);
+	     }
+	     if (!(cajaLargo.empty())){
+		 c.gridy = 0;
+		 c.gridx = 2;
+		 c.fill = GridBagConstraints.NONE;
+		 c.anchor = GridBagConstraints.CENTER;
+		 
+		 f.setVisible(true);
+		 container.remove(mensajeLargo);
+		 mensajeLargo = new JLabel(cajaLargo.pop());
+		 container.add(mensajeLargo,c);
+	     }
+
+	     c.gridy = 1;
+	     c.gridx = 4;
+	     c.fill = GridBagConstraints.NONE;
+	     c.gridwidth = GridBagConstraints.RELATIVE;
+	     c.anchor = GridBagConstraints.EAST;
+	     
+	     f.setVisible(true);
+	     container.remove(tiempo);
+	     tiempo = new JLabel(String.valueOf(t.getTiempo()));
+	     container.add(tiempo,c);
+	}
+	
+    }	
     
     public static void main (String args[]){
 	
@@ -183,23 +255,17 @@ public class Interfaz {
 
 	// Prueba de tiempo.
 
-	Tiempo t = new Tiempo();
+	t = new Tiempo();
 	new Contador(t);
+
+	cajaLargo = new Caja();	
+	cajaCorto = new Caja();	
+	cajaDisco = new Caja();
+	
 	Disco disco = new Disco(t);
-	new PlanificadorLargo(t,1);
-	new PlanificadorCorto(t,1,disco);
+	new PlanificadorLargo(t,1,cajaLargo);
+	new PlanificadorCorto(t,1,disco,cajaCorto);
 
-
-	while(true) {
-	    int i = t.getTiempo();
-	    while(t.getTiempo() < i + 1){
-		try{
-		    Thread.currentThread().sleep(100);
-	    	}
-	    	catch(InterruptedException ie){}
-	    }
-	    
-	    System.out.println("Desde Interfaz Tiempo es "+t.getTiempo());
-	}	
-    }   
-}       
+	graficas();
+    }	
+}   

@@ -1,5 +1,3 @@
-import java.lang.Math.*;
-
 public class PlanificadorCorto implements Runnable{
     Tiempo t;
     int id;
@@ -15,12 +13,15 @@ public class PlanificadorCorto implements Runnable{
      * cada proceso */
     int quantum = 10;
     
-    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco){ 
+    //Caja para pasar mensajes
+    Caja caja;
+    
+    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja){ 
 	this.id = id;
+	this.caja = caja;
 	this.disco = disco;
 	this.t=tiempo;
 	new Thread(this,"PlanificadorCorto").start();
-
     }
     
     public void run(){
@@ -36,8 +37,9 @@ public class PlanificadorCorto implements Runnable{
 	    	catch(InterruptedException ie){}
 	    }
 
-	    System.out.println("El Planificador de corto plazo anuncia que" + 
-			       " expiro un quantum. Tiempo ="+t.getTiempo());
+	    String mensaje = "Planificador corto. Tiempo: "+ String.valueOf(t.getTiempo());
+	    caja.push(mensaje);
+
 	    //Aqui se envia ese proceso a Disco	    
 	}
     }
