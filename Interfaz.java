@@ -261,10 +261,11 @@ public class Interfaz {
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
 	cajaDisco = new Caja();
-	
+
+	CPU cpu = new CPU(1); 
 	Disco disco = new Disco(t);
 	new PlanificadorLargo(t,1,cajaLargo);
-	new PlanificadorCorto(t,1,disco,cajaCorto);
+	new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
 
 	graficas();
     }	

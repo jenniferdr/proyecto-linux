@@ -7,12 +7,12 @@ public class CPU {
 	this.proceso_actual = null;
     }
 
-    public set_proc(Proceso proc){
+    public void set_proc(Proceso proc){
 	this.proceso_actual = proc;
     }
 
-    public usar_cpu(){
+    public void usar_cpu(){
 	System.out.print("Proceso usando CPU:");
-	System.out.println(proceso_actual.id);
+	System.out.println(proceso_actual.getId());
     }
 }

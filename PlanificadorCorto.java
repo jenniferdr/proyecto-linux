@@ -2,6 +2,8 @@ public class PlanificadorCorto implements Runnable{
     Tiempo t;
     int id;
 
+    CPU cpu;
+
     /*Cola de listos que maneja cada planificador*/
     Runqueue runqueue;
 
@@ -48,14 +50,13 @@ public class PlanificadorCorto implements Runnable{
      * ofrece el sistema de operacion. Envia un proceso a la cola de bloqueados, 
      * en nuestro simulador se envia a la cola de bloqueados del disco 
      * directamente */
-    public static void llamada_sys_bloq(Proceso proc){
-	if (disco.termino_io(proc)){
-	    disco.sacar_proceso(proc);
-	    //meter proceso en alguna runcola
-	    return;
-	}
-	disco.insertar_proc(proc);
-	schedule();
+    public void llamada_sys_bloq(Proceso proc){
+	disco.insertar_proceso(proc);
+	//setear el proceso como bloqueado
+	while (!disco.termino_io(proc))
+	    schedule();
+	//setear el proceso como listo
+	disco.sacar_proceso(proc);
     }
     
     /* Procedimiento que se le ofrece a las llamadas del systema para ceder el CPU.
@@ -65,7 +66,7 @@ public class PlanificadorCorto implements Runnable{
      * es que nuestro simulador necesita hacer la llamada bloqueante en nombre del 
      * proceso que se planifico. Para esto devolvemos el proceso*/
     public Proceso schedule() {
-	return (Proceso) null;;
+	return (Proceso) null;
     }
 
     /*Algoritmo de balance de carga*/
