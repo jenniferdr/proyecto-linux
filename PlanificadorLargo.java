@@ -9,17 +9,17 @@ public class PlanificadorLargo implements Runnable{
     }
 
     public void run(){
-
-	int i =-100000000;
+	int quantum = 5;
 	while(true) {
-	    
-	    if (i==-100000000) {
-		i = -100000000;
-		if(t.getTiempo()%2 == 0) {
-		System.out.println("Desde Planif Tiempo es par "+t.getTiempo());
-		}
+	    int tiempo = t.getTiempo();
+	    while(t.getTiempo() < tiempo + quantum){
+		try{
+		    Thread.currentThread().sleep(100);
+	    	}
+	    	catch(InterruptedException ie){}
 	    }
-	    i++;
+	    System.out.println("El planificador largo anuncia que pasaron "
+			       + quantum  +" tiempos");
 	}
     }
 }
