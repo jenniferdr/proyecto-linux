@@ -45,15 +45,24 @@ public class Disco implements Runnable{
      * lo realizara el planificador de corto plazo para devolver un
      * a la cola de listos. Retorna true si el proceso estaba 
      * listo para salir*/
-    public boolean sacar_proceso(Proceso proceso){
+    public boolean termino_io(Proceso proceso){
 	if (!(acceso_disco.equals(proceso))){
-		if (colaBloqueados.contains(proceso))
-		    return false;
-		else 
-		    return true;
-	    }
+	    if (colaBloqueados.contains(proceso))
+		return false;
+	    else 
+		return true;
+	}
 	else
 	    return false;
+    }
+    
+    /* Procedimiento para despertar un proceso una vez que termina I/O */
+    private void wake_up(){
+	return;
+    }
+    
+    public void sacar_proceso(Proceso proc){
+	return;
     }
     
     public void insertar_proceso(Proceso proceso){

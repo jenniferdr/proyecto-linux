@@ -6,7 +6,7 @@ public class PlanificadorCorto implements Runnable{
     Runqueue runqueue;
 
     /*Referencia al Disco donde debe enviar a los procesos cuando ellos lo solicitan*/
-    Disco disco;
+    static Disco disco;
     
     /* Por los momentos se colocara el quantum como un atributo que no cambia, 
      * para la siguiente entrega se realizaran los algoritmos que lo calculan para 
@@ -16,32 +16,92 @@ public class PlanificadorCorto implements Runnable{
     //Caja para pasar mensajes
     Caja caja;
     
-    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja){ 
+    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja, CPU cpu){ 
 	this.id = id;
+	this.cpu = cpu;
 	this.caja = caja;
 	this.disco = disco;
 	this.t=tiempo;
 	new Thread(this,"PlanificadorCorto").start();
     }
     
+    /* Esto realmente no se hace en linux. En linux las llamadas al sistema 
+     * que invocan al planificador las realizan los mismos procedimientos usuarios. 
+     * En el simulador el metodo run se encarga de hacer lo que se supone que haria 
+     * un proceso ejecutandose en el CPU */
     public void run(){
-	//Se saca un proceso de la cola de Runqueue
-	int aux,tmp;
+	Proceso actual = schedule();
+	
 	while(true) {
-	    /*Duerme hasta que expire el quantum*/	    
+	    
 	    int tiempo = t.getTiempo();
-	    while(t.getTiempo() < tiempo + quantum){
-		try{
-		    Thread.currentThread().sleep(100);
-	    	}
-	    	catch(InterruptedException ie){}
-	    }
-
+	    while(t.getTiempo() < tiempo + quantum)
+		cpu.usar_cpu();
+	    llamada_sys_bloq(actual);
 	    String mensaje = "Planificador corto. Tiempo: "+ String.valueOf(t.getTiempo());
 	    caja.push(mensaje);
-
-	    //Aqui se envia ese proceso a Disco	    
 	}
+    }
+
+    
+    /* Procedimiento que simula las llamadas del sistema bloqueantes que
+     * ofrece el sistema de operacion. Envia un proceso a la cola de bloqueados, 
+     * en nuestro simulador se envia a la cola de bloqueados del disco 
+     * directamente */
+    public static void llamada_sys_bloq(Proceso proc){
+	if (disco.termino_io(proc)){
+	    disco.sacar_proceso(proc);
+	    //meter proceso en alguna runcola
+	    return;
+	}
+	disco.insertar_proc(proc);
+	schedule();
+    }
+    
+    /* Procedimiento que se le ofrece a las llamadas del systema para ceder el CPU.
+     * Metodo del planificador corto que escoge un nuevo proceso para asignarle 
+     * el procesador. En el simulador schedule devuelve el proceso que asigno al CPU,
+     * para poder manejarlo despues en run. Esto no se hace en verdad, lo que pasa
+     * es que nuestro simulador necesita hacer la llamada bloqueante en nombre del 
+     * proceso que se planifico. Para esto devolvemos el proceso*/
+    public Proceso schedule() {
+	return (Proceso) null;;
+    }
+
+    /*Algoritmo de balance de carga*/
+    private void balance_carga(){
+	return;
     }
     
 }
+
+
+/* Ignoren esto:
+    private class Llamada_sys_bloq() implements Runnable{
+	Proceso proc;
+	Tiempo t;
+	Disco disco;
+	
+	public Llamada_sys_bloq(Proceso proc, Disco disco, Tiempo t){
+	    this.disco = disco;
+	    this.t = t;
+	    this.proc = proc;
+	    new Thread(this,"Llamada_sys_bloq").start();
+	}
+
+	public void run(){
+	    while(true){
+		if (disco.termino_io(proc))
+		    break;
+		schedule();
+		//wait mistico por el disco
+		
+	    }
+	    disco.wake_up(proc);
+	}
+    }
+
+
+
+
+*/
