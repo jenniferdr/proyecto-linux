@@ -21,6 +21,7 @@ public class Proceso {
     private int sleep_avg;
     private static final int MAX_SLEEP_AVG=70;
     private int MAX_BONUS=10;
+    private int quantum;
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
 
@@ -29,6 +30,7 @@ public class Proceso {
 	this.tiempo_llegada = -1;
 	this.tiempo_espera = -1;
 	this.prio=0;
+	this.quantum=100;
 	this.rafagas_cpu = null;
 	this.estado = null;
     }
