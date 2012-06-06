@@ -36,7 +36,7 @@ public class PlanificadorCorto implements Runnable{
 	Proceso actual = schedule();
 	
 	while(true) {
-	    Proceso actual=schedule();
+	    actual=schedule();
 	    int tiempo = t.getTiempo();
 	    while(t.getTiempo() < tiempo + quantum)
 		cpu.usar_cpu();
