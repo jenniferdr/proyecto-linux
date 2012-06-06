@@ -16,7 +16,7 @@ public class CPU {
     }
 
     public void usar_cpu(){
-	//System.out.print("Proceso usando CPU:");
-	//System.out.println(proceso_actual.getId());
+	System.out.print("Proceso usando CPU:");
+	System.out.println((proceso_actual == null) ? "Idle task" : proceso_actual.getId());
     }
 }

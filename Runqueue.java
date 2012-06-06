@@ -48,6 +48,14 @@ public class Runqueue{
 	return arrays[activo].escoger_proceso();
     }
     
+    public void insertar(Proceso proc){
+       arrays[activo].insertar(proc);
+    }
+
+    public void insertar(Proceso proc, int pos){
+	 arrays[activo].insertar(proc,pos);
+    }
+
 }
 
 @SuppressWarnings("unchecked")
@@ -65,10 +73,10 @@ class Prio_array_t{
 
     public Proceso escoger_proceso(){
 	int pos;
-	for (pos = 0; pos < prio_array.length(); pos++)
+	for (pos = 0; pos < prio_array.length; pos++)
 	    if (!(prio_array[pos].isEmpty()))
 		break;
-	if (pos == prio_array.length())
+	if (pos == prio_array.length)
 	    return (Proceso) null;
 	Proceso proc = prio_array[pos].get(0);
 	prio_array[pos].remove(0);

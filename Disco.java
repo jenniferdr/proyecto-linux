@@ -46,6 +46,8 @@ public class Disco implements Runnable{
      * a la cola de listos. Retorna true si el proceso estaba 
      * listo para salir*/
     public boolean termino_io(Proceso proceso){
+	if (acceso_disco == null)
+	    return true;
 	if (!(acceso_disco.equals(proceso))){
 	    if (colaBloqueados.contains(proceso))
 		return false;

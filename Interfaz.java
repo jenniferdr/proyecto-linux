@@ -263,9 +263,10 @@ public class Interfaz {
 	cajaDisco = new Caja();
 
 	CPU cpu = new CPU(1); 
+	Runqueue runqueue = new Runqueue();
 	Disco disco = new Disco(t);
 	new PlanificadorLargo(t,1,cajaLargo);
-	new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
+	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,runqueue);
 
 	graficas();
     }	
