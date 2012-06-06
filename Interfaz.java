@@ -256,7 +256,7 @@ public class Interfaz {
 	// Prueba de tiempo.
 
 	t = new Tiempo();
-	new Contador(t);
+	new Contador(t,200);
 
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	

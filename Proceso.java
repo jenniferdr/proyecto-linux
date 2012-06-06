@@ -5,6 +5,7 @@
 
 import java.util.*;
 import java.io.*;
+import java.lang.Math;
 
 /*Falta calcular el sleep_avg cada vez que se mueve un proceso y shed_tic*/
 
@@ -27,10 +28,9 @@ public class Proceso {
 	this.id = -1;
 	this.tiempo_llegada = -1;
 	this.tiempo_espera = -1;
-	this.prio=-1;
+	this.prio=0;
 	this.rafagas_cpu = null;
 	this.estado = null;
-
     }
 
     public Proceso(int id, int tiempo_llegada, int tiempo_espera, 
@@ -45,9 +45,17 @@ public class Proceso {
     }
 
     public void effective_prio(){
+	/* Conversion o Mapping entre el sleep_avg(0-MAX_SLEEP_AVG) y el bonus (0-MAX_BONUS)*/
+	/*El numero resultante estara entre 0 y 10*/
 	int current_bonus= this.sleep_avg * MAX_BONUS/ MAX_SLEEP_AVG;
+	/*Como el rango permitido para el bonus esta entre -5 y 5, se resta 5*/
 	int bonus= current_bonus - MAX_BONUS /2;
-	this.prio= this.static_prio - bonus;
+	//this.prio= max(-20,min(this.static_prio - bonus,19));
+	this.prio= this.static_prio-bonus;
+	if(this.prio>19) this.prio=19;
+	if(this.prio<-20) this.prio=-20;
+	/* Mapeo del rango [-20,19] a [100,139]*/
+	this.prio= this.prio +120;
     }
 
     public void setId(int id) {
