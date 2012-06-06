@@ -7,8 +7,8 @@ import java.math.BigInteger;
 public class Runqueue{
 
     public Prio_array_t[] arrays;
-    public Proceso active;
-    public Proceso expired;
+    public Prio_array_t active;
+    public Prio_array_t expired;
     public int activo;
 
     // Num de procesos en la cola
