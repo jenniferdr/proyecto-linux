@@ -61,10 +61,6 @@ public class Disco implements Runnable{
 	return;
     }
     
-    public void sacar_proceso(Proceso proc){
-	return;
-    }
-    
     public void insertar_proceso(Proceso proceso){
 	colaBloqueados.add(proceso);
     }
