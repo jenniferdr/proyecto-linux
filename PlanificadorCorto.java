@@ -41,8 +41,6 @@ public class PlanificadorCorto implements Runnable{
 	    while(t.getTiempo() < tiempo + quantum)
 		cpu.usar_cpu();
 	    llamada_sys_bloq(actual);
-	    String mensaje = "Planificador corto. Tiempo: "+ String.valueOf(t.getTiempo());
-	    caja.push(mensaje);
 	}
     }
 

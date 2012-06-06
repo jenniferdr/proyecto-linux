@@ -1,9 +1,11 @@
 public class CPU {
     Proceso proceso_actual;
     int id;
+    Caja caja;
     
-    public CPU(int id){
+    public CPU(int id, Caja caja){
 	this.id = id;
+	this.caja = caja;
 	this.proceso_actual = null;
     }
 
@@ -16,7 +18,7 @@ public class CPU {
     }
 
     public void usar_cpu(){
-	System.out.print("Proceso usando CPU:");
-	System.out.println((proceso_actual == null) ? "Idle task" : proceso_actual.getId());
+	String mensaje = ("Proceso usando CPU:" + ((proceso_actual == null) ? "Idle task" : proceso_actual.getId()));
+	caja.push(mensaje);
     }
 }
