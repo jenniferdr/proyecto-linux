@@ -240,8 +240,8 @@ public class Interfaz {
 	
 	try {
 	    
-	    if(args.length!= 1){
-		System.err.println("Uso: java proceso <nombre_ArchivoXML>");
+	    if(args.length!= 2){
+		System.err.println("Uso: java proceso <nombre_ArchivoXML> <retardo>");
 		System.exit(-1);
 	    }
 	    
@@ -249,14 +249,24 @@ public class Interfaz {
 	    
 	} catch (Exception e) {
 	    System.err.println("Error al abrir el archivo");
-	    //e.printStackTrace();
-	    
+	    //e.printStackTrace();   
+	}
+	int retardo=10;
+	if (esNumero(args[1])) {
+	    retardo = Integer.parseInt(args[1]);
+	    if(retardo<=0){
+		System.err.println("El retardo debe ser entero positivo");
+		System.exit(-1);
+	    }
+	}else{
+	    System.err.println("El retardo debe ser un numero entero positivo");
+	    System.exit(-1);
 	}
 
-	// Prueba de tiempo.
 
+	// Prueba de tiempo.
 	t = new Tiempo();
-	new Contador(t,200);
+	new Contador(t,retardo);
 
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
