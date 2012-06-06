@@ -53,10 +53,12 @@ public class PlanificadorCorto implements Runnable{
     public void llamada_sys_bloq(Proceso proc){
 	disco.insertar_proceso(proc);
 	//setear el proceso como bloqueado
-	while (!disco.termino_io(proc))
+	if (!(disco.termino_io(proc))){
 	    schedule();
+	    return;
+	}
 	//setear el proceso como listo
-	disco.sacar_proceso(proc);
+	runqueue.insertar_proceso(proc);
     }
     
     /* Procedimiento que se le ofrece a las llamadas del systema para ceder el CPU.
@@ -65,19 +67,19 @@ public class PlanificadorCorto implements Runnable{
      * para poder manejarlo despues en run. Esto no se hace en verdad, lo que pasa
      * es que nuestro simulador necesita hacer la llamada bloqueante en nombre del 
      * proceso que se planifico. Para esto devolvemos el proceso*/
+
     public Proceso schedule() {
-	//Desabilitar interrupciones y revisar si la interrupcion fue en hecha 
-	// durante una tarea atomica
-	calcular_stuff();
 	Proceso prev = cpu.get_proc();
-	//Proceso nuevo = runqueue.escoger_proceso(); 
-	/*
-	if (!(prev.equals(nuevo)))
+	Proceso nuevo = runqueue.escoger_proceso(); 
+	
+	if (nuevo == null)
+	    balance_carga();
+	nuevo = runqueue.escoger_proceso(); 
+
+	if (nuevo == null)
+	    cambio_contexto(prev,null);
+	else if (!(prev.equals(nuevo)))
 	    cambio_contexto(prev,nuevo);
-	*/
-	//Habilitar interrupciones 
-	//return nuevo;
-	return (Proceso) null;
     }
 
     private void cambio_contexto(Proceso prev, Proceso nuevo){
@@ -86,10 +88,6 @@ public class PlanificadorCorto implements Runnable{
 	    cpu.set_proc(nuevo);
 	}
 	catch(InterruptedException ie){}
-    }
-
-    private void calcular_stuff(){
-	return;
     }
 
     /*Algoritmo de balance de carga*/
