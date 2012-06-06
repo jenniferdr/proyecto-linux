@@ -20,5 +20,12 @@ public class CPU {
     public void usar_cpu(){
 	String mensaje = ("Proceso usando CPU:" + ((proceso_actual == null) ? "Idle task" : proceso_actual.getId()));
 	caja.push(mensaje);
+	try{
+	    Thread.currentThread().sleep(200);
+	    //Nota: Esto es inconveniente porque hace necesario saber 
+	    //que tan rapido avanza la simulacion. 
+	}
+	catch(InterruptedException ie){}
+	
     }
 }
