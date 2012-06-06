@@ -75,7 +75,7 @@ public class PlanificadorCorto implements Runnable{
 	    balance_carga();
 	    nuevo = runqueue.escoger_proceso(); 
 	}
-	else if (!(prev.equals(nuevo)))
+	else if (prev == null || !(prev.equals(nuevo)))
 	    cambio_contexto(prev,nuevo);
 
 	return nuevo;

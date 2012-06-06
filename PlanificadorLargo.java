@@ -98,7 +98,7 @@ public class PlanificadorLargo implements Runnable{
 		    }
 		    pos_Array_Proc++;
 		} 
-
+		/*
 		if (pos_Array_Proc == procesos.length){
 		    	System.out.println(" ------------------ Imprimir Runqueue ----------------");
 	
@@ -123,7 +123,7 @@ public class PlanificadorLargo implements Runnable{
 			}
 
 		    System.exit(1);
-		}
+		    }*/
 	    }
 
 	}
