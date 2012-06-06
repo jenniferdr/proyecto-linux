@@ -24,6 +24,7 @@ public class Proceso {
     private int quantum;
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
+    private int prioridad;
 
     public Proceso() {
 	this.id = -1;
