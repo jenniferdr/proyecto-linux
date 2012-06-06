@@ -26,9 +26,9 @@ public class Proceso {
     public Proceso() {
 	this.id = -1;
 	this.tiempo_llegada = -1;
-	this.tiempo_espera = -1; 
+	this.tiempo_espera = -1;
+	this.prio=-1;
 	this.rafagas_cpu = null;
-	this.prioridad = -1;
 	this.estado = null;
 
     }
@@ -40,7 +40,7 @@ public class Proceso {
 	this.tiempo_llegada = tiempo_llegada;
 	this.tiempo_espera = tiempo_espera;
 	this.rafagas_cpu = rafagas_cpu;
-	this.prioridad = prioridad;
+	this.prio = prioridad;
 	this.estado = estado;
     }
 
@@ -83,11 +83,11 @@ public class Proceso {
     }
 
     public void setPrioridad(int prioridad) {
-	this.prioridad = prioridad;
+	this.prio = prio;
     }
     
     public int getPrioridad() {
-	return prioridad;
+	return prio;
     }
 
     public void setEstado(String estado) {
