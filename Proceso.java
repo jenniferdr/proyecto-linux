@@ -22,7 +22,7 @@ public class Proceso {
 	this.tiempo_llegada = -1;
 	this.tiempo_espera = -1; 
 	this.rafagas_cpu = null;
-	this.prioridad = -1;
+	this.prioridad = 0;
 	this.estado = null;
 
     }

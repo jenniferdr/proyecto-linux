@@ -11,7 +11,11 @@ public class Interfaz {
     public static Caja cajaLargo;
     public static Caja cajaCorto;
     public static Caja cajaDisco;
+    public static Runqueue cola_CPU1;
+    public static Runqueue cola_CPU2;
+
     
+
     private static Tiempo t;
     
     // aqui deberia ir donde se van a guardar los procesos
@@ -158,7 +162,7 @@ public class Interfaz {
 	     System.out.println("# de procesos: "+nprocesos);
 	
 	    for(int ii=0; ii<nprocesos;ii++) {
-		System.out.println("Proceso "+ii);
+		System.out.println("Proceso "+est_procesos[ii].getId());
 		System.out.println("    Tiempo llegada: "+est_procesos[ii].getTiempo_llegada());
 
 
@@ -261,12 +265,23 @@ public class Interfaz {
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
 	cajaDisco = new Caja();
-
+	cola_CPU1 = new Runqueue();
+	cola_CPU2 = new Runqueue();
+	
 	CPU cpu = new CPU(1); 
 	Disco disco = new Disco(t);
-	new PlanificadorLargo(t,1,cajaLargo);
-	new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
 
-	graficas();
+	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
+	//new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
+
+
+
+
+
+
+
+	
+
+	//graficas();
     }	
 }   

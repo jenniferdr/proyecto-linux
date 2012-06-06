@@ -14,7 +14,7 @@ public class Contador implements Runnable {
     public void run(){
 	while(true) {
 	    try {
-		Thread.sleep(200);
+		Thread.sleep(2000);
 		t.incTiempo();
 	    } catch(InterruptedException e) {}
 	}

@@ -3,12 +3,12 @@
  */
 
 import java.util.ArrayList;
-
+ 
 public class Runqueue{
 
     public Prio_array_t[] arrays;
-    public Proceso active;
-    public Proceso expired;
+    public Prio_array_t active;
+    public Prio_array_t expired;
     public int activo;
 
     // Num de procesos en la cola
@@ -43,6 +43,48 @@ public class Runqueue{
 	arrays[0] = new Prio_array_t();
 	arrays[1] = new Prio_array_t();
     }
+
+    public long getNr_running(){
+	return nr_running;
+    }
+
+    public void setNr_running(long nr_running) {
+	this.nr_running = nr_running;
+    }
+
+    public int getActivo() {
+	return activo;
+    }
+
+    public void setActivo(int act){
+	this.activo = act; 
+    }
+
+    public Prio_array_t getActive(){
+	return this.active;
+    }
+
+    public void setActive(Prio_array_t active) {
+	this.active = active;
+    }
+
+    public Prio_array_t getExpired() {
+	return this.expired;
+    }
+
+    public void setExpired(Prio_array_t expired) {
+	this.expired = expired;
+    }
+
+
+    public Prio_array_t[] getArrays() {
+	return this.arrays;
+    }
+
+    public void setArrays(Prio_array_t[] arrays) {
+	this.arrays = arrays;
+    }
+    
 }
 
 @SuppressWarnings("unchecked")
@@ -58,4 +100,7 @@ class Prio_array_t{
 	for (int i=0 ; i < 140 ; i++)
 	    prio_array[i] = new ArrayList();
     }
+
+   
+
 }
