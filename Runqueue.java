@@ -3,7 +3,7 @@
  */
 
 import java.util.ArrayList;
- 
+
 public class Runqueue{
 
     public Prio_array_t[] arrays;
@@ -85,11 +85,23 @@ public class Runqueue{
 	this.arrays = arrays;
     }
     
+    
+    public Proceso escoger_proceso(){
+	return arrays[activo].escoger_proceso();
+    }
+    
+    public void insertar(Proceso proc){
+       arrays[activo].insertar(proc);
+    }
+
+    public void insertar(Proceso proc, int pos){
+	 arrays[activo].insertar(proc,pos);
+    }
+
 }
 
 @SuppressWarnings("unchecked")
 class Prio_array_t{
-    public byte bitmask;
     public ArrayList<Proceso>[] prio_array;
 
     // Cantidad de procesos en este prio_array
@@ -101,6 +113,26 @@ class Prio_array_t{
 	    prio_array[i] = new ArrayList();
     }
 
-   
+    public Proceso escoger_proceso(){
+	int pos;
+	for (pos = 0; pos < prio_array.length; pos++)
+	    if (!(prio_array[pos].isEmpty()))
+		break;
+	if (pos == prio_array.length)
+	    return (Proceso) null;
+	Proceso proc = prio_array[pos].get(0);
+	prio_array[pos].remove(0);
+	nr_active--;
+	return proc;
+    }
+    
+    public void insertar(Proceso proc){
+	prio_array[0].add(proc);
+	nr_active++;
+    }
 
+    public void insertar(Proceso proc, int pos){
+	prio_array[pos].add(proc);
+	nr_active++;
+    }
 }

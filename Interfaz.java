@@ -244,8 +244,8 @@ public class Interfaz {
 	
 	try {
 	    
-	    if(args.length!= 1){
-		System.err.println("Uso: java proceso <nombre_ArchivoXML>");
+	    if(args.length!= 2){
+		System.err.println("Uso: java proceso <nombre_ArchivoXML> <retardo>");
 		System.exit(-1);
 	    }
 	    
@@ -253,35 +253,42 @@ public class Interfaz {
 	    
 	} catch (Exception e) {
 	    System.err.println("Error al abrir el archivo");
-	    //e.printStackTrace();
-	    
+	    //e.printStackTrace();   
+	}
+	int retardo=10;
+	if (esNumero(args[1])) {
+	    retardo = Integer.parseInt(args[1]);
+	    if(retardo<=0){
+		System.err.println("El retardo debe ser entero positivo");
+		System.exit(-1);
+	    }
+	}else{
+	    System.err.println("El retardo debe ser un numero entero positivo");
+	    System.exit(-1);
 	}
 
-	// Prueba de tiempo.
 
+	// Prueba de tiempo.
 	t = new Tiempo();
-	new Contador(t);
+	new Contador(t,retardo);
 
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
 	cajaDisco = new Caja();
 	cola_CPU1 = new Runqueue();
 	cola_CPU2 = new Runqueue();
-	
-	CPU cpu = new CPU(1); 
+
+
+	CPU cpu = new CPU(1,cajaCorto); 
+	Runqueue runqueue = new Runqueue();
 	Disco disco = new Disco(t);
 
 	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
+	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1);
+
 	//new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
 
 
-
-
-
-
-
-	
-
-	//graficas();
+	graficas();
     }	
 }   

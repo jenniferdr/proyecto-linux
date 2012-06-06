@@ -62,6 +62,7 @@ public class Disco implements Runnable{
     private void wake_up(){
 	return;
     }
+
     
     public void insertar_proceso(Proceso proceso){
 	colaBloqueados.add(proceso);
