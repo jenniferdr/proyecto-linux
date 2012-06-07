@@ -39,6 +39,7 @@ public class Runqueue{
 
     public Runqueue(){
 	activo = 0;
+	this.cpu_load=0;
 	arrays = new Prio_array_t[2];
 	arrays[0] = new Prio_array_t();
 	arrays[1] = new Prio_array_t();
