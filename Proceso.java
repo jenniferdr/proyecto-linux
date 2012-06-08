@@ -20,7 +20,7 @@ public class Proceso {
     /* Tiempo que el proceso ha dormido menos el que ha consumido en CPU*/
     private int sleep_avg;
     private static final int MAX_SLEEP_AVG=70;
-    private int MAX_BONUS=10;
+    private static final int MAX_BONUS=10;
     private int quantum;
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
@@ -100,6 +100,14 @@ public class Proceso {
     
     public int getPrioridad() {
 	return prio;
+    }
+
+    public void sleep_avg(int sleepAvg) {
+	this.sleep_avg = sleepAvg;
+    }
+
+    public int getSleep_avg() {
+	return this.sleep_avg;
     }
 
     public void setEstado(String estado) {

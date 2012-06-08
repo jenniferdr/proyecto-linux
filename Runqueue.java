@@ -37,8 +37,13 @@ public class Runqueue{
        cuando esta runqueue esta siendo balanceada*/ 
     public int push_cpu;
 
+    /*Cada cuanto tiempo se debe realancear la carga*/
+    public int intervalo_balance;
+
     public Runqueue(){
 	activo = 0;
+	this.cpu_load=0;
+	this.intervalo_balance=0;
 	arrays = new Prio_array_t[2];
 	arrays[0] = new Prio_array_t();
 	arrays[1] = new Prio_array_t();

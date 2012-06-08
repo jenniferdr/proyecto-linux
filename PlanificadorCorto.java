@@ -80,8 +80,21 @@ public class PlanificadorCorto implements Runnable{
 	catch(InterruptedException ie){}
     }
 
-    /*Algoritmo de balance de carga*/
+    /*Algoritmo de balance de carga o rebalance_tick()*/
     private void balance_carga(){
+	long old_load=this.runqueue.cpu_load;
+	long this_load= 128*this.runqueue.nr_running;
+
+	if(old_load<this_load) old_load++;
+	this.runqueue.cpu_load= (this_load+old_load)/2;
+	
+	int intervalo=  this.runqueue.intervalo_balance; 
+	if(intervalo==50){
+	    //revisar las dos runqueues a ver cual tiene mas cpu_load
+	    //if(this.runqueque==runqueueM) return 
+	    // agarrar la de menor prioridad de la runqM y traerla 
+	}
+	this.runqueue.intervalo_balance= (intervalo++)%50;
 	return;
     }
 
