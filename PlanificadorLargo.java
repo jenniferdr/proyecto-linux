@@ -70,7 +70,8 @@ public class PlanificadorLargo implements Runnable{
 	int pos_Array_Proc = 0;
 	int tiempo_llegada = 0;
 	System.out.println(" # procesos: "+ procesos.length);
-	while(true) {
+	boolean matarHilo=true;
+	while(matarHilo) {
 	    tiempo = t.getTiempo();
 	    
 	    Proceso porCrearse = procesos[pos_Array_Proc];
@@ -98,7 +99,7 @@ public class PlanificadorLargo implements Runnable{
 		    }
 		    pos_Array_Proc++;
 		} 
-		/*
+		
 		if (pos_Array_Proc == procesos.length){
 		    	System.out.println(" ------------------ Imprimir Runqueue ----------------");
 	
@@ -122,8 +123,8 @@ public class PlanificadorLargo implements Runnable{
 			
 			}
 
-		    System.exit(1);
-		    }*/
+		    matarHilo=false;
+		    }
 	    }
 
 	}
