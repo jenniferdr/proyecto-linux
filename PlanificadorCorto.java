@@ -15,14 +15,15 @@ public class PlanificadorCorto implements Runnable{
     /* Por los momentos se colocara el quantum como un atributo que no cambia, 
      * para la siguiente entrega se realizaran los algoritmos que lo calculan para 
      * cada proceso */
-    int quantum = 10;
+    int quantum = 100;
     
-    //Caja para pasar mensajes
+    //Caja para pasar mensajes a la interfaz
     Caja caja;
 
     Disco_check disco_check;
     
-    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja, CPU cpu, Runqueue runqueue){ 
+    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,
+			     CPU cpu, Runqueue runqueue){ 
 	this.id = id;
 	this.runqueue = runqueue;
 	this.cpu = cpu;
@@ -41,17 +42,24 @@ public class PlanificadorCorto implements Runnable{
 	Proceso actual = schedule();
 	
 	while(true) {
+	    int tiempo_actual = t.getTiempo();
+	    int tiempo_limite = tiempo_actual + quantum;
+	    System.out.println("TIEMPO LIMITEEE:::  "+tiempo_limite);
+	    while(t.getTiempo() < tiempo_limite)
+		cpu.usar_cpu(t);
+
+	    /*Cuando culmina su quantum ocurre "interrupción de reloj"*/
+	    
+	    /*llamada_sys_bloq(actual);
+	      disco_check.insertar(actual);*/
+	    System.out.println("CAMBIAR A OTRO PROCESOOO");
+	    
 	    actual = schedule();	    
-	    int tiempo = t.getTiempo();
-	    while(t.getTiempo() < tiempo + quantum)
-		cpu.usar_cpu();
-	    llamada_sys_bloq(actual);
-	    disco_check.insertar(actual);
 	}
     }
 
      
-    /* Procedimiento que se le ofrece a las llamadas del systema para ceder el CPU.
+    /* Procedimiento que se le ofrece a las llamadas del sistema para ceder el CPU.
      * Metodo del planificador corto que escoge un nuevo proceso para asignarle 
      * el procesador. En el simulador schedule devuelve el proceso que asigno al CPU,
      * para poder manejarlo despues en run. Esto no se hace en verdad, lo que pasa
@@ -59,20 +67,21 @@ public class PlanificadorCorto implements Runnable{
      * proceso que se planifico. Para esto devolvemos el proceso*/
 
     public Proceso schedule() {
-	Proceso prev = cpu.get_proc();
-	Proceso nuevo = runqueue.escoger_proceso(); 
+	Proceso prev = this.cpu.get_proc();
+	Proceso nuevo = this.runqueue.escoger_proceso(); 
 	
 	if (nuevo == null){
 	    balance_carga();
-	    nuevo = runqueue.escoger_proceso(); 
+	    nuevo = this.runqueue.escoger_proceso();
+	    cambio_proceso(prev,nuevo);
 	}
 	else if (prev == null || !(prev.equals(nuevo)))
-	    cambio_contexto(prev,nuevo);
+	    cambio_proceso(prev,nuevo);
 
 	return nuevo;
     } 
 
-    private void cambio_contexto(Proceso prev, Proceso nuevo){
+    private void cambio_proceso(Proceso prev, Proceso nuevo){
 	try{
 	    Thread.currentThread().sleep(100);
 	    cpu.set_proc(nuevo);

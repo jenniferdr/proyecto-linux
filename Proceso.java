@@ -102,12 +102,16 @@ public class Proceso {
 	return prio;
     }
 
-    public void sleep_avg(int sleepAvg) {
+    public void setSleep_avg(int sleepAvg) {
 	this.sleep_avg = sleepAvg;
     }
 
     public int getSleep_avg() {
 	return this.sleep_avg;
+    }
+
+    public int getQuantum() {
+	return this.quantum;
     }
 
     public void setEstado(String estado) {

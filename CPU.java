@@ -21,11 +21,19 @@ public class CPU {
 	return proceso_actual;
     }
 
-    public void usar_cpu(){
-
-	if (prev != null && !(prev.equals(proceso_actual))){
-	    String mensaje = ("Proceso usando CPU:  " + ((proceso_actual == null) ? "Idle task" : proceso_actual.getId()) + "            ");
-	    caja.push(mensaje);
+    public void usar_cpu(Tiempo t){
+	System.out.println(""+t.getTiempo());
+	boolean hayCambioProc= prev != null && proceso_actual!=null 
+	    &&  !(prev.equals(proceso_actual));
+	
+	/*Imprimir solo si hay cambio de proceso*/
+	if ( hayCambioProc || prev!=proceso_actual){
+	    String mensaje = ("Proceso usando CPU:  " + 
+			      ((proceso_actual == null) ? "Idle task" :
+			       proceso_actual.getId()) + "            ");
+	    //caja.push(mensaje);
+	    if(proceso_actual!=null)
+	    System.out.println("Proceso actual: "+proceso_actual.getId());
 	    prev = proceso_actual;
 	}
 	try{
