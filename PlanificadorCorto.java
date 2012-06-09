@@ -114,12 +114,12 @@ public class PlanificadorCorto implements Runnable{
     public void llamada_sys_bloq(Proceso proc){
 	disco.insertar_proceso(proc);
 	//setear el proceso como bloqueado
-	if (!(disco.termino_io(proc))){
-	    schedule();
-	    return;
-	}
-	//setear el proceso como listo
-	runqueue.insertar(proc);
+	// if (!(disco.termino_io(proc))){
+	//     schedule();
+	//     return;
+	// }
+	// //setear el proceso como listo
+	// runqueue.insertar(proc);
     }
 
     /*Hilo para sacar procesos del Disco*/
@@ -139,6 +139,7 @@ public class PlanificadorCorto implements Runnable{
 	public void run(){
 	    while (true){
 		while(pendientes.isEmpty()) {}
+		System.out.println("Hola!");
 		Proceso p = ((pendientes.isEmpty())  ? null : pendientes.get(0));
 		if (p != null){
 		    while (!(disco.termino_io(p))){
@@ -152,8 +153,6 @@ public class PlanificadorCorto implements Runnable{
 		    runqueue.insertar(p);
 			System.out.println("Saque al proceso" + p.getId());			
 		}
-		else
-		    pendientes.remove(0);
 	    }
 	}
 

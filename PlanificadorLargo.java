@@ -70,7 +70,8 @@ public class PlanificadorLargo implements Runnable{
 	int pos_Array_Proc = 0;
 	int tiempo_llegada = 0;
 	System.out.println(" # procesos: "+ procesos.length);
-	while(true) {
+	boolean matarHilo=true;
+	while(matarHilo) {
 	    tiempo = t.getTiempo();
 	    
 	    Proceso porCrearse = procesos[pos_Array_Proc];
@@ -99,7 +100,7 @@ public class PlanificadorLargo implements Runnable{
 		    pos_Array_Proc++;
 		} 
 		
-		if (pos_Array_Proc == procesos.length){/*
+		if (pos_Array_Proc == procesos.length){
 		    	System.out.println(" ------------------ Imprimir Runqueue ----------------");
 	
 			System.out.println("Cola CPU1 tiene "+cola_A.getNr_running()+" procesos y Cola CPU2 tiene "+cola_B.getNr_running()+" procesos");
@@ -121,8 +122,7 @@ public class PlanificadorLargo implements Runnable{
 			    System.out.println ("Soy el proc "+pr1.getId());
 			
 			}
-						       */		       
-		    //System.exit(1);
+		    matarHilo=false;
 		    }
 	    }
 
