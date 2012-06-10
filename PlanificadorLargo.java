@@ -131,7 +131,7 @@ public class PlanificadorLargo implements Runnable{
 
 			// aqui
 			matarHilo = false;
-x
+			//		    System.exit(1);
 		}
 	    }
 
