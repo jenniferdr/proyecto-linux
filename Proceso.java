@@ -103,7 +103,13 @@ public class Proceso {
     /*Precondicion: No es la ultima rafaga*/
     public int getRafaga(){
 	if(this.rafaga==0){
-	    //quitar la primera rafaga, setear this.rafaga al entero q dio
+	    Integer next = rafagas_cpu.pollFirst();
+	    if(next == null){
+		//Se terminaron las rafagas!
+	    }
+	    else {
+		this.rafaga = next;
+	    }
 	}
 	return this.rafaga;
     }
@@ -149,6 +155,14 @@ public class Proceso {
 
     public void setEnCPU(int enCPU) {
 	this.enCPU = enCPU;
+    }
+
+    public int getQuantumRestante(){
+	return this.quantumRestante;
+    }
+
+    public void setQuantumRestante(int q){
+	this.quantumRestante = q;
     }
     
 }
