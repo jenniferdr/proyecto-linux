@@ -4,24 +4,31 @@ public class Disco implements Runnable{
     private ArrayList<Proceso> colaBloqueados;
     private int cicloIO;
     private Tiempo t;
+    /*Retardo, representa el intervalo para un tick de reloj*/
+    private int retardo;
+    private Listos colaListos1;
+    private Listos colaListos2;
 
     /*Referencia al proceso de la cola de bloqueados que 
     * tiene acceso al disco en cada instante*/
     private Proceso acceso_disco;
     
-    public Disco(Tiempo t){
+    public Disco(Tiempo t,int retardo,Listos colaListos1,Listos colaListos2){
 	this.t = t;
 	colaBloqueados = new ArrayList<Proceso>();
 	cicloIO = 2;
 	acceso_disco = null;
+	this.retardo=retardo;
+	this.colaListos1= colaListos1;
+	this.colaListos2= colaListos2;
 	new Thread(this,"Disco").start();
     }
     
     public void run(){
 	while (true){
-
 	    if (!(colaBloqueados.isEmpty())){
-		/* Se asigna el disco al primer proceso y se saca de la cola de espera*/
+		/* Se asigna el disco al primer proceso y se saca de 
+		   la cola de espera*/
 		acceso_disco = colaBloqueados.get(0);
 		colaBloqueados.remove(0);
 
@@ -29,24 +36,23 @@ public class Disco implements Runnable{
 		int tiempo = t.getTiempo();
 		while(t.getTiempo() < tiempo + cicloIO){
 		    try{
-			Thread.currentThread().sleep(200*cicloIO);
-			//Nota: Esto es inconveniente porque hace necesario saber 
-			//que tan rapido avanza la simulacion. 
+			Thread.currentThread().sleep(this.retardo*cicloIO);
 		    }
 		    catch(InterruptedException ie){}
 		}		
 
-		/*El proceso esta listo para salir, queda de parte del planificador
-		 * de corto plazo darse cuenta */
-		acceso_disco = null;
-		synchronized (this){
-		    notifyAll();
+		/*El proceso vuelve a estado "listo", en su respectivo CPU*/
+		switch(acceso_disco.getEnCPU()){
+		case 1:colaListos1.put(acceso_disco);
+		    break;
+		case 2: colaListos2.put(acceso_disco);
 		}
-		System.out.println("hice notify");
+		/*Liberar el uso del Disco*/
+		acceso_disco = null;
 	    }
 	    else{
 		try{
-		    Thread.currentThread().sleep(200);
+		    Thread.currentThread().sleep(retardo/2);
 		}
 		catch(InterruptedException ie){}
 	    }
@@ -75,8 +81,8 @@ public class Disco implements Runnable{
 	return;
     }
     
-    public void insertar_proceso(Proceso proceso){
+    public synchronized  void insertar_proceso(Proceso proceso){
 	colaBloqueados.add(proceso);
-    }
-	
+    }	
 }
+

@@ -15,21 +15,24 @@ public class PlanificadorCorto implements Runnable{
     /* Por los momentos se colocara el quantum como un atributo que no cambia, 
      * para la siguiente entrega se realizaran los algoritmos que lo calculan para 
      * cada proceso */
-    int quantum = 10;
+    int quantum=50;
     
-    //Caja para pasar mensajes
+    //Caja para pasar mensajes a la interfaz
     Caja caja;
 
     Disco_check disco_check;
+    boolean NEED_RESCHED;
     
-    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja, CPU cpu, Runqueue runqueue){ 
+    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,CPU cpu,
+			     Runqueue runqueue,int retardo,Listos colaListosIO){ 
 	this.id = id;
 	this.runqueue = runqueue;
 	this.cpu = cpu;
 	this.caja = caja;
 	this.disco = disco;
 	this.t=tiempo;
-	this.disco_check = new Disco_check();
+	this.disco_check = new Disco_check(colaListosIO);
+	this.TIF_NEED_RESCHED= false;
 	new Thread(this,"PlanificadorCorto").start();
     }
     
@@ -41,17 +44,35 @@ public class PlanificadorCorto implements Runnable{
 	Proceso actual = schedule();
 	
 	while(true) {
+	    // Sacar la rafaga del proceso
+	    int rafaga= actual.getRafaga(); 
+	    int tiempo_inicio = t.getTiempo();
+	    int tiempo_limiteQ = tiempo_inicio + quantum;
+	    int tiempo_limiteR= tiempo_inicio + rafaga;
+
+	    while(t.getTiempo() < tiempo_limiteQ && t.getTiempo()<tiempo_limiteR){
+		cpu.usar_cpu(t);
+		if(NEED_RESCHED)break;
+	    }
+	    si se agoto el quantum pero le queda tiempo de raf colocar expirados rellenar quantum 
+		se agoto el quantum y no queda raf: 1 si hay mas rafs ir a IO
+		                                    2 no hay mas matar proceso
+		no se agoto el quantum ni la rafaga mandar a activos
+	    // determinar el tiempo que corrio, actualizar quantum y sleep_avg
+ 
+	    /*Cuando culmina su quantum ocurre "interrupción de reloj"*/
+	    /*Pero ahorita suponemos q requiere leer/escribir info del disco*/
+	    if(actual!=null){
+		this.runqueue.nr_iowait++;
+		llamada_sys_bloq(actual);
+		//disco_check.insertar(actual);
+	    }
 	    actual = schedule();	    
-	    int tiempo = t.getTiempo();
-	    while(t.getTiempo() < tiempo + quantum)
-		cpu.usar_cpu();
-	    llamada_sys_bloq(actual);
-	    disco_check.insertar(actual);
 	}
     }
 
      
-    /* Procedimiento que se le ofrece a las llamadas del systema para ceder el CPU.
+    /* Procedimiento que se le ofrece a las llamadas del sistema para ceder el CPU.
      * Metodo del planificador corto que escoge un nuevo proceso para asignarle 
      * el procesador. En el simulador schedule devuelve el proceso que asigno al CPU,
      * para poder manejarlo despues en run. Esto no se hace en verdad, lo que pasa
@@ -59,25 +80,26 @@ public class PlanificadorCorto implements Runnable{
      * proceso que se planifico. Para esto devolvemos el proceso*/
 
     public Proceso schedule() {
-	Proceso prev = cpu.get_proc();
-	Proceso nuevo = runqueue.escoger_proceso(); 
+	Proceso prev = this.cpu.get_proc();
+	Proceso nuevo = this.runqueue.escoger_proceso(); 
 	
 	if (nuevo == null){
 	    balance_carga();
-	    nuevo = runqueue.escoger_proceso(); 
+	    nuevo = this.runqueue.escoger_proceso();
+	    cambio_proceso(prev,nuevo);
 	}
 	else if (prev == null || !(prev.equals(nuevo)))
-	    cambio_contexto(prev,nuevo);
+	    cambio_proceso(prev,nuevo);
 
 	return nuevo;
     } 
 
-    private void cambio_contexto(Proceso prev, Proceso nuevo){
-	try{
-	    Thread.currentThread().sleep(100);
+    private void cambio_proceso(Proceso prev, Proceso nuevo){
+	//try{
+	    //Thread.currentThread().sleep(100);
 	    cpu.set_proc(nuevo);
-	}
-	catch(InterruptedException ie){}
+	    //}
+	    //catch(InterruptedException ie){}
     }
 
     /*Algoritmo de balance de carga o rebalance_tick()*/
@@ -115,38 +137,27 @@ public class PlanificadorCorto implements Runnable{
 
     /*Hilo para sacar procesos del Disco*/
     private class Disco_check implements Runnable{
-	private ArrayList<Proceso> pendientes;
-
+	private Listos listos;
 	
-	public Disco_check(){
-	    pendientes = new ArrayList();
+	public Disco_check(Listos colaListosDisco){
+	    this.listos= colaListosDisco;
 	    new Thread(this,"PlanificadorCortoDiscoCheck").start();	    
-	}
-	
-	public void insertar(Proceso p){
-	    pendientes.add(p);
 	}
 	
 	public void run(){
 	    while (true){
-		while(pendientes.isEmpty()) {}
-		System.out.println("Hola!");
-		Proceso p = ((pendientes.isEmpty())  ? null : pendientes.get(0));
-		if (p != null){
-		    while (!(disco.termino_io(p))){
-			try{
-			    System.out.println("Adios! Me voy a dormir");
-			    wait();
-			    System.out.println("Milagro, desperte! :o ");
-			}
-			catch(InterruptedException e){}
-		    }
-		    runqueue.insertar(p);
-			System.out.println("Saque al proceso" + p.getId());			
-		}
+		Proceso p=listos.get();
+		/*Premiar al proceso por haber dormido*/
+		p.setSleep_avg(p.getSleep_avg() +2);
+		p.effective_prio();
+		// Colocar proceso en la RunQueue
+		// (Si se le acabo su quantum igual se coloca alli)
+		runqueue.insertar(p,p.getPrioridad());
+		runqueue.nr_iowait--;
+		/*Avisar que este proceso puede expropiar al CPU*/
+		this.NEED_RESCHED=true;
+		System.out.println("Saque al proceso" + p.getId());
 	    }
 	}
-
-	
     }       
 }

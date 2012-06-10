@@ -37,13 +37,14 @@ public class Runqueue{
        cuando esta runqueue esta siendo balanceada*/ 
     public int push_cpu;
 
-    /*Cada cuanto tiempo se debe realancear la carga*/
+    /*Cada cuanto tiempo se debe rebalancear la carga*/
     public int intervalo_balance;
 
     public Runqueue(){
 	activo = 0;
 	this.cpu_load=0;
 	this.intervalo_balance=0;
+	this.nr_iowait=0;
 	arrays = new Prio_array_t[2];
 	arrays[0] = new Prio_array_t();
 	arrays[1] = new Prio_array_t();
@@ -91,16 +92,24 @@ public class Runqueue{
     }
     
     
-    public Proceso escoger_proceso(){
-	return arrays[activo].escoger_proceso();
+    public synchronized Proceso escoger_proceso(){
+	Proceso proc=arrays[activo].escoger_proceso();
+	if(proc==null && nr_iowait==0){ 
+	    swap();
+	    proc=arrays[activo].escoger_proceso();
+	}
+	return proc;
     }
     
-    public void insertar(Proceso proc){
+    public synchronized void insertar(Proceso proc){
        arrays[activo].insertar(proc);
     }
 
-    public void insertar(Proceso proc, int pos){
+    public synchronized void insertar(Proceso proc, int pos){
 	 arrays[activo].insertar(proc,pos);
+    }
+    private void swap(){
+	this.activo= (activo==0)? 1:0;
     }
 
 }

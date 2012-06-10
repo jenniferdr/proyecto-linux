@@ -130,7 +130,6 @@ public class PlanificadorLargo implements Runnable{
 			    System.out.println ("Soy el proc "+pr1.getId()+" y estoy en cpu "+pr1.getEnCPU());
 			
 			}
-
 		    matarHilo=false;
 		    }
 	    }
