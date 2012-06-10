@@ -281,10 +281,14 @@ public class Interfaz {
 
 	CPU cpu = new CPU(1,cajaCorto); 
 	Runqueue runqueue = new Runqueue();
-	Disco disco = new Disco(t);
+
+	/*Colas de procesos que han salido de disco*/
+	Listos listosIO1= new Listos();
+	Listos listosIO2= new Listos();
+	Disco disco = new Disco(t,retardo,listosIO1,listosIO2);
 
 	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
-	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1);
+	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1,retardo,listosIO1);
 
 	//new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
 

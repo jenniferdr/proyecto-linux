@@ -15,22 +15,22 @@ public class PlanificadorCorto implements Runnable{
     /* Por los momentos se colocara el quantum como un atributo que no cambia, 
      * para la siguiente entrega se realizaran los algoritmos que lo calculan para 
      * cada proceso */
-    int quantum = 50;
+    int quantum=50;
     
     //Caja para pasar mensajes a la interfaz
     Caja caja;
 
     Disco_check disco_check;
     
-    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,
-			     CPU cpu, Runqueue runqueue){ 
+    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,CPU cpu,
+			     Runqueue runqueue,int retardo,Listos colaListosIO){ 
 	this.id = id;
 	this.runqueue = runqueue;
 	this.cpu = cpu;
 	this.caja = caja;
 	this.disco = disco;
 	this.t=tiempo;
-	this.disco_check = new Disco_check();
+	this.disco_check = new Disco_check(colaListosIO);
 	new Thread(this,"PlanificadorCorto").start();
     }
     
@@ -49,10 +49,11 @@ public class PlanificadorCorto implements Runnable{
 		cpu.usar_cpu(t);
 
 	    /*Cuando culmina su quantum ocurre "interrupción de reloj"*/
-	    
+	    /*Pero ahorita suponemos q requiere leer/escribir info del disco*/
+	    if(actual!=null){
 	    llamada_sys_bloq(actual);
-	    disco_check.insertar(actual);
-	    
+	    //disco_check.insertar(actual);
+	    }
 	    actual = schedule();	    
 	}
     }
@@ -123,53 +124,22 @@ public class PlanificadorCorto implements Runnable{
 
     /*Hilo para sacar procesos del Disco*/
     private class Disco_check implements Runnable{
-	private ArrayList<Proceso> pendientes;
-
+	//private ArrayList<Proceso> pendientes;
+	private Listos listos;
 	
-	public Disco_check(){
-	    pendientes = new ArrayList();
+	public Disco_check(Listos colaListosDisco){
+	    //pendientes = new ArrayList();
+	    this.listos= colaListosDisco;
 	    new Thread(this,"PlanificadorCortoDiscoCheck").start();	    
-	}
-	
-	public void insertar(Proceso p){
-	    this.pendientes.add(p);
-	    if(!pendientes.isEmpty())
-	    System.out.println("SE AGREGO PROC DC");
 	}
 	
 	public void run(){
 	    while (true){
-		//System.out.println("Disco Checker");
-		
-		if(!(this.pendientes.isEmpty())){
-		    System.out.println("Hola!");
-	       
-		Proceso p = ((this.pendientes.isEmpty())  ? null : pendientes.get(0));
-		if (p != null){
-		    while (!(disco.termino_io(p))){
-			try{
-			    System.out.println("Adios! Me voy a dormir");
-			    wait();
-			    System.out.println("Milagro, desperte! :o ");
-			}
-			catch(InterruptedException e){}
-		    }
-		    runqueue.insertar(p);
-			System.out.println("Saque al proceso" + p.getId());			
-		}else{
-		    try{
-			Thread.currentThread().sleep(200);
-		    }
-		    catch(InterruptedException ie){}
-		}
-		 }else{
-		try{
-		    Thread.currentThread().sleep(200);
-		}
-		catch(InterruptedException ie){}
-		}
+		Proceso p=listos.get(); 
+		// Colocar proceso en la RunQueue 
+		runqueue.insertar(p,p.getPrioridad());
+		System.out.println("Saque al proceso" + p.getId());
 	    }
-	    
 	}
     }       
 }
