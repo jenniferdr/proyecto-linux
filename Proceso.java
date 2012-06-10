@@ -100,6 +100,10 @@ public class Proceso {
 	return rafagas_cpu;
     }
 
+    public void setRafaga(int rafaga) {
+	this.rafaga = rafaga;
+    }
+
     /*Precondicion: No es la ultima rafaga*/
     public int getRafaga(){
 	if(this.rafaga==0){
@@ -114,6 +118,10 @@ public class Proceso {
 	return this.rafaga;
     }
 
+    public boolean quedanRafagas(){
+	return (rafagas_cpu.size()!=0);
+    }
+
     public void setPrioridad(int prioridad) {
 	this.prio = prio;
     }
@@ -124,6 +132,7 @@ public class Proceso {
 
     public void setSleep_avg(int sleepAvg) {
 	this.sleep_avg =(sleepAvg<=MAX_SLEEP_AVG)? sleepAvg :MAX_SLEEP_AVG;
+	if(this.sleep_avg<0)this.sleep_avg=0;
     }
 
     public int getSleep_avg() {

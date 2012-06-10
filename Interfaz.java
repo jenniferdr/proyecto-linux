@@ -279,7 +279,7 @@ public class Interfaz {
 	cola_CPU2 = new Runqueue();
 
 
-	CPU cpu = new CPU(1,cajaCorto); 
+	CPU cpu = new CPU(1,cajaCorto,retardo); 
 	Runqueue runqueue = new Runqueue();
 
 	/*Colas de procesos que han salido de disco*/

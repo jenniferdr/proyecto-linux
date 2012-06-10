@@ -108,6 +108,12 @@ public class Runqueue{
     public synchronized void insertar(Proceso proc, int pos){
 	 arrays[activo].insertar(proc,pos);
     }
+    
+    public synchronized void insertarExp(Proceso proc, int pos){
+	int expirados= (activo==1)?0:1;
+	 arrays[expirados].insertar(proc,pos);
+    }
+
     private void swap(){
 	this.activo= (activo==0)? 1:0;
     }
