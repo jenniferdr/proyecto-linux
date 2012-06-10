@@ -26,7 +26,6 @@ public class Disco implements Runnable{
     
     public void run(){
 	while (true){
-
 	    if (!(colaBloqueados.isEmpty())){
 		/* Se asigna el disco al primer proceso y se saca de 
 		   la cola de espera*/
@@ -43,7 +42,7 @@ public class Disco implements Runnable{
 		}		
 
 		/*El proceso vuelve a estado "listo", en su respectivo CPU*/
-		switch(/*acceso_disco.getEnCPU()*/ 1){
+		switch(acceso_disco.getEnCPU()){
 		case 1:colaListos1.put(acceso_disco);
 		    break;
 		case 2: colaListos2.put(acceso_disco);
@@ -53,7 +52,7 @@ public class Disco implements Runnable{
 	    }
 	    else{
 		try{
-		    Thread.currentThread().sleep(retardo);
+		    Thread.currentThread().sleep(retardo/2);
 		}
 		catch(InterruptedException ie){}
 	    }

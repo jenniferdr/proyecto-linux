@@ -15,6 +15,7 @@ public class Proceso {
     private int tiempo_llegada;
     private int tiempo_espera;
     private LinkedList<Integer> rafagas_cpu;
+    private int rafaga;
     private static final int static_prio=0;
     private int prio;
     /* Tiempo que el proceso ha dormido menos el que ha consumido en CPU*/
@@ -22,9 +23,11 @@ public class Proceso {
     private static final int MAX_SLEEP_AVG=70;
     private static final int MAX_BONUS=10;
     private int quantum;
+    private int quantumRestante;
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
     private int prioridad;
+    private int enCPU;
 
     public Proceso() {
 	this.id = -1;
@@ -35,6 +38,7 @@ public class Proceso {
 	this.rafagas_cpu = null;
 	this.prioridad = 0;
 	this.estado = null;
+	this.enCPU = -1;
     }
 
     public Proceso(int id, int tiempo_llegada, int tiempo_espera, 
@@ -46,6 +50,10 @@ public class Proceso {
 	this.rafagas_cpu = rafagas_cpu;
 	this.prio = prioridad;
 	this.estado = estado;
+	this.prio=0;
+	this.prioridad = 0;
+	this.enCPU = -1;
+	
     }
 
     public void effective_prio(){
@@ -94,6 +102,14 @@ public class Proceso {
 	return rafagas_cpu;
     }
 
+    /*Precondicion: No es la ultima rafaga*/
+    public int getRafaga(){
+	if(this.rafaga==0){
+	    //quitar la primera rafaga, setear this.rafaga al entero q dio
+	}
+	return this.rafaga;
+    }
+
     public void setPrioridad(int prioridad) {
 	this.prio = prio;
     }
@@ -103,7 +119,7 @@ public class Proceso {
     }
 
     public void setSleep_avg(int sleepAvg) {
-	this.sleep_avg = sleepAvg;
+	this.sleep_avg =(sleepAvg<=MAX_SLEEP_AVG)? sleepAvg :MAX_SLEEP_AVG;
     }
 
     public int getSleep_avg() {
@@ -127,6 +143,14 @@ public class Proceso {
 	    return true;
 	else 
 	    return false;
+    }
+
+    public int getEnCPU(){
+	return this.enCPU;
+    }
+
+    public void setEnCPU(int enCPU) {
+	this.enCPU = enCPU;
     }
     
 }

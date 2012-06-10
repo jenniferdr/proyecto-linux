@@ -3,12 +3,14 @@ public class CPU {
     Proceso prev;
     int id;
     Caja caja;
+    int retardo;
     
-    public CPU(int id, Caja caja){
+    public CPU(int id, Caja caja,int retardo){
 	this.id = id;
 	this.caja = caja;
 	this.prev = null;
 	this.proceso_actual = null;
+	this.retardo=retardo;
 	caja.push("Proceso usando CPU: Idle task");
     }
 
@@ -37,9 +39,7 @@ public class CPU {
 	    prev = proceso_actual;
 	}
 	try{
-	    Thread.currentThread().sleep(200);
-	    //Nota: Esto es inconveniente porque hace necesario saber 
-	    //que tan rapido avanza la simulacion. 
+	    Thread.currentThread().sleep(retardo-1); 
 	}
 	catch(InterruptedException ie){}
 	

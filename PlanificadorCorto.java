@@ -21,6 +21,7 @@ public class PlanificadorCorto implements Runnable{
     Caja caja;
 
     Disco_check disco_check;
+    boolean NEED_RESCHED;
     
     public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,CPU cpu,
 			     Runqueue runqueue,int retardo,Listos colaListosIO){ 
@@ -31,6 +32,7 @@ public class PlanificadorCorto implements Runnable{
 	this.disco = disco;
 	this.t=tiempo;
 	this.disco_check = new Disco_check(colaListosIO);
+	this.TIF_NEED_RESCHED= false;
 	new Thread(this,"PlanificadorCorto").start();
     }
     
@@ -42,17 +44,28 @@ public class PlanificadorCorto implements Runnable{
 	Proceso actual = schedule();
 	
 	while(true) {
-	    int tiempo_actual = t.getTiempo();
-	    int tiempo_limite = tiempo_actual + quantum;
-	    
-	    while(t.getTiempo() < tiempo_limite)
-		cpu.usar_cpu(t);
+	    // Sacar la rafaga del proceso
+	    int rafaga= actual.getRafaga(); 
+	    int tiempo_inicio = t.getTiempo();
+	    int tiempo_limiteQ = tiempo_inicio + quantum;
+	    int tiempo_limiteR= tiempo_inicio + rafaga;
 
+	    while(t.getTiempo() < tiempo_limiteQ && t.getTiempo()<tiempo_limiteR){
+		cpu.usar_cpu(t);
+		if(NEED_RESCHED)break;
+	    }
+	    si se agoto el quantum pero le queda tiempo de raf colocar expirados rellenar quantum 
+		se agoto el quantum y no queda raf: 1 si hay mas rafs ir a IO
+		                                    2 no hay mas matar proceso
+		no se agoto el quantum ni la rafaga mandar a activos
+	    // determinar el tiempo que corrio, actualizar quantum y sleep_avg
+ 
 	    /*Cuando culmina su quantum ocurre "interrupción de reloj"*/
 	    /*Pero ahorita suponemos q requiere leer/escribir info del disco*/
 	    if(actual!=null){
-	    llamada_sys_bloq(actual);
-	    //disco_check.insertar(actual);
+		this.runqueue.nr_iowait++;
+		llamada_sys_bloq(actual);
+		//disco_check.insertar(actual);
 	    }
 	    actual = schedule();	    
 	}
@@ -124,20 +137,25 @@ public class PlanificadorCorto implements Runnable{
 
     /*Hilo para sacar procesos del Disco*/
     private class Disco_check implements Runnable{
-	//private ArrayList<Proceso> pendientes;
 	private Listos listos;
 	
 	public Disco_check(Listos colaListosDisco){
-	    //pendientes = new ArrayList();
 	    this.listos= colaListosDisco;
 	    new Thread(this,"PlanificadorCortoDiscoCheck").start();	    
 	}
 	
 	public void run(){
 	    while (true){
-		Proceso p=listos.get(); 
-		// Colocar proceso en la RunQueue 
+		Proceso p=listos.get();
+		/*Premiar al proceso por haber dormido*/
+		p.setSleep_avg(p.getSleep_avg() +2);
+		p.effective_prio();
+		// Colocar proceso en la RunQueue
+		// (Si se le acabo su quantum igual se coloca alli)
 		runqueue.insertar(p,p.getPrioridad());
+		runqueue.nr_iowait--;
+		/*Avisar que este proceso puede expropiar al CPU*/
+		this.NEED_RESCHED=true;
 		System.out.println("Saque al proceso" + p.getId());
 	    }
 	}
