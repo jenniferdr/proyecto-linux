@@ -64,17 +64,18 @@ public class PlanificadorCorto implements Runnable{
 			   leer/escribir de disco y se encola alla */
 			this.runqueue.nr_iowait++;
 			llamada_sys_bloq(actual);
+			actual.setQuantumRestante
 		    }else{
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
 		    }
-		    /*Se agota el quantum pero no su rafaga actual */ 
+		  /*Se agota el quantum pero no su rafaga actual */ 
 		}else if(t.getTiempo()>=tiempo_limiteQ){
 		    // mandar a expirados
 
 		 /*Se agota su rafaga actual pero no su quantum*/
 		}else if(t.getTiempo()>=tiempo_limiteR){
-		    //mandar a activos
+		    
 
 		 /*Solo fue vilmente expropiado*/
 		}else{

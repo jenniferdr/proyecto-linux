@@ -7,8 +7,6 @@ import java.util.*;
 import java.io.*;
 import java.lang.Math;
 
-/*Falta calcular el sleep_avg cada vez que se mueve un proceso y shed_tic*/
-
 public class Proceso {
     
     private int id;
