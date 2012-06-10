@@ -158,6 +158,14 @@ public class Proceso {
     public void setEnCPU(int enCPU) {
 	this.enCPU = enCPU;
     }
+
+    public int getQuantumRestante(){
+	return this.quantumRestante;
+    }
+
+    public void setQuantumRestante(int q){
+	this.quantumRestante = q;
+    }
     
 }
 
