@@ -74,7 +74,7 @@ public class PlanificadorLargo implements Runnable{
 	int pos_Array_Proc = 0;
 	int tiempo_llegada = 0;
 	System.out.println(" # procesos: "+ procesos.length);
-	boolean matarHilo = true;
+	boolean matarHilo=true;
 	while(matarHilo) {
 	    tiempo = t.getTiempo();
 	    
@@ -97,13 +97,15 @@ public class PlanificadorLargo implements Runnable{
 		    int cola_Ganadora = seleccionar_runqueue();
 		    
 		    if (cola_Ganadora==1) {
+			porCrearse.setEnCPU(1);
 			agregar_Proceso(porCrearse,cola_A);
 		    } else {
+			porCrearse.setEnCPU(2);
 			agregar_Proceso(porCrearse,cola_B);
 		    }
 		    pos_Array_Proc++;
 		} 
-
+		
 		if (pos_Array_Proc == procesos.length){
 
 		    // Esto es para imprimir las Runqueu puede comentarse hasta
@@ -116,7 +118,7 @@ public class PlanificadorLargo implements Runnable{
 			
 			for(int ite=0; ite < imprim.size();ite++){
 			    Proceso pr = (Proceso)  imprim.get(ite);
-			    System.out.println ("Soy el proc "+pr.getId());
+			    System.out.println ("Soy el proc "+pr.getId()+" y estoy en cpu "+pr.getEnCPU());
 			}
 
 			System.out.println(" ------------------ CPU 2 ----------------");
@@ -125,14 +127,12 @@ public class PlanificadorLargo implements Runnable{
 			for(int ite1=0; ite1 < imprim1.size();ite1++){
 			
 			    Proceso pr1 = (Proceso)  imprim1.get(ite1);
-			    System.out.println ("Soy el proc "+pr1.getId());
+			    System.out.println ("Soy el proc "+pr1.getId()+" y estoy en cpu "+pr1.getEnCPU());
 			
 			}
 
-			// aqui
-			matarHilo = false;
-			//		    System.exit(1);
-		}
+		    matarHilo=false;
+		    }
 	    }
 
 	}

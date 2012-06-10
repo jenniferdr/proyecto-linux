@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class PlanificadorCorto implements Runnable{
     Tiempo t;
     int id;
@@ -17,6 +19,8 @@ public class PlanificadorCorto implements Runnable{
     
     //Caja para pasar mensajes
     Caja caja;
+
+    Disco_check disco_check;
     
     public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja, CPU cpu, Runqueue runqueue){ 
 	this.id = id;
@@ -25,6 +29,7 @@ public class PlanificadorCorto implements Runnable{
 	this.caja = caja;
 	this.disco = disco;
 	this.t=tiempo;
+	this.disco_check = new Disco_check();
 	new Thread(this,"PlanificadorCorto").start();
     }
     
@@ -36,30 +41,16 @@ public class PlanificadorCorto implements Runnable{
 	Proceso actual = schedule();
 	
 	while(true) {
-	    actual=schedule();
+	    actual = schedule();	    
 	    int tiempo = t.getTiempo();
 	    while(t.getTiempo() < tiempo + quantum)
 		cpu.usar_cpu();
 	    llamada_sys_bloq(actual);
+	    disco_check.insertar(actual);
 	}
     }
 
-    
-    /* Procedimiento que simula las llamadas del sistema bloqueantes que
-     * ofrece el sistema de operacion. Envia un proceso a la cola de bloqueados, 
-     * en nuestro simulador se envia a la cola de bloqueados del disco 
-     * directamente */
-    public void llamada_sys_bloq(Proceso proc){
-	disco.insertar_proceso(proc);
-	//setear el proceso como bloqueado
-	if (!(disco.termino_io(proc))){
-	    schedule();
-	    return;
-	}
-	//setear el proceso como listo
-	runqueue.insertar(proc);
-    }
-    
+     
     /* Procedimiento que se le ofrece a las llamadas del systema para ceder el CPU.
      * Metodo del planificador corto que escoge un nuevo proceso para asignarle 
      * el procesador. En el simulador schedule devuelve el proceso que asigno al CPU,
@@ -75,7 +66,7 @@ public class PlanificadorCorto implements Runnable{
 	    balance_carga();
 	    nuevo = runqueue.escoger_proceso(); 
 	}
-	else if (!(prev.equals(nuevo)))
+	else if (prev == null || !(prev.equals(nuevo)))
 	    cambio_contexto(prev,nuevo);
 
 	return nuevo;
@@ -89,40 +80,73 @@ public class PlanificadorCorto implements Runnable{
 	catch(InterruptedException ie){}
     }
 
-    /*Algoritmo de balance de carga*/
+    /*Algoritmo de balance de carga o rebalance_tick()*/
     private void balance_carga(){
+	long old_load=this.runqueue.cpu_load;
+	long this_load= 128*this.runqueue.nr_running;
+
+	if(old_load<this_load) old_load++;
+	this.runqueue.cpu_load= (this_load+old_load)/2;
+	
+	int intervalo=  this.runqueue.intervalo_balance; 
+	if(intervalo==50){
+	    //revisar las dos runqueues a ver cual tiene mas cpu_load
+	    //if(this.runqueque==runqueueM) return 
+	    // agarrar la de menor prioridad de la runqM y traerla 
+	}
+	this.runqueue.intervalo_balance= (intervalo++)%50;
 	return;
     }
-    
-}
 
+    /* Procedimiento que simula las llamadas del sistema bloqueantes que
+     * ofrece el sistema de operacion. Envia un proceso a la cola de bloqueados, 
+     * en nuestro simulador se envia a la cola de bloqueados del disco 
+     * directamente */
+    public void llamada_sys_bloq(Proceso proc){
+	disco.insertar_proceso(proc);
+	//setear el proceso como bloqueado
+	// if (!(disco.termino_io(proc))){
+	//     schedule();
+	//     return;
+	// }
+	// //setear el proceso como listo
+	// runqueue.insertar(proc);
+    }
 
-/* Ignoren esto:
-   private class Llamada_sys_bloq() implements Runnable{
-   Proceso proc;
-   Tiempo t;
-   Disco disco;
+    /*Hilo para sacar procesos del Disco*/
+    private class Disco_check implements Runnable{
+	private ArrayList<Proceso> pendientes;
+
 	
-   public Llamada_sys_bloq(Proceso proc, Disco disco, Tiempo t){
-   this.disco = disco;
-   this.t = t;
-   this.proc = proc;
-   new Thread(this,"Llamada_sys_bloq").start();
-   }
+	public Disco_check(){
+	    pendientes = new ArrayList();
+	    new Thread(this,"PlanificadorCortoDiscoCheck").start();	    
+	}
+	
+	public void insertar(Proceso p){
+	    pendientes.add(p);
+	}
+	
+	public void run(){
+	    while (true){
+		while(pendientes.isEmpty()) {}
+		System.out.println("Hola!");
+		Proceso p = ((pendientes.isEmpty())  ? null : pendientes.get(0));
+		if (p != null){
+		    while (!(disco.termino_io(p))){
+			try{
+			    System.out.println("Adios! Me voy a dormir");
+			    wait();
+			    System.out.println("Milagro, desperte! :o ");
+			}
+			catch(InterruptedException e){}
+		    }
+		    runqueue.insertar(p);
+			System.out.println("Saque al proceso" + p.getId());			
+		}
+	    }
+	}
 
-   public void run(){
-   while(true){
-   if (disco.termino_io(proc))
-   break;
-   schedule();
-   //wait mistico por el disco
-		
-   }
-   disco.wake_up(proc);
-   }
-   }
-
-
-
-
-*/
+	
+    }       
+}

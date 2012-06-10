@@ -284,14 +284,14 @@ public class Interfaz {
 	Disco disco = new Disco(t);
 
 	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
-	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1);
+	//new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1);
 
 	//new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
-
+	/*
 	try {
 	    graficas();
 	}	
-	catch (ArrayIndexOutOfBoundsException  e){}
+	catch (ArrayIndexOutOfBoundsException  e){}*/
     }
 
 }   

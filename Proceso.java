@@ -20,11 +20,12 @@ public class Proceso {
     /* Tiempo que el proceso ha dormido menos el que ha consumido en CPU*/
     private int sleep_avg;
     private static final int MAX_SLEEP_AVG=70;
-    private int MAX_BONUS=10;
+    private static final int MAX_BONUS=10;
     private int quantum;
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
     private int prioridad;
+    private int enCPU;
 
     public Proceso() {
 	this.id = -1;
@@ -35,6 +36,7 @@ public class Proceso {
 	this.rafagas_cpu = null;
 	this.prioridad = 0;
 	this.estado = null;
+	this.enCPU = -1;
     }
 
     public Proceso(int id, int tiempo_llegada, int tiempo_espera, 
@@ -46,6 +48,10 @@ public class Proceso {
 	this.rafagas_cpu = rafagas_cpu;
 	this.prio = prioridad;
 	this.estado = estado;
+	this.prio=0;
+	this.prioridad = 0;
+	this.enCPU = -1;
+	
     }
 
     public void effective_prio(){
@@ -102,6 +108,14 @@ public class Proceso {
 	return prio;
     }
 
+    public void sleep_avg(int sleepAvg) {
+	this.sleep_avg = sleepAvg;
+    }
+
+    public int getSleep_avg() {
+	return this.sleep_avg;
+    }
+
     public void setEstado(String estado) {
 	this.estado = estado;
     }
@@ -115,6 +129,14 @@ public class Proceso {
 	    return true;
 	else 
 	    return false;
+    }
+
+    public int getEnCPU(){
+	return this.enCPU;
+    }
+
+    public void setEnCPU(int enCPU) {
+	this.enCPU = enCPU;
     }
     
 }

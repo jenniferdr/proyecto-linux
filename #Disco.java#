@@ -12,18 +12,19 @@ public class Disco implements Runnable{
     public Disco(Tiempo t){
 	this.t = t;
 	colaBloqueados = new ArrayList<Proceso>();
-	cicloIO = 10;
+	cicloIO = 2;
 	acceso_disco = null;
 	new Thread(this,"Disco").start();
     }
     
     public void run(){
 	while (true){
+
 	    if (!(colaBloqueados.isEmpty())){
 		/* Se asigna el disco al primer proceso y se saca de la cola de espera*/
 		acceso_disco = colaBloqueados.get(0);
 		colaBloqueados.remove(0);
-		
+
 		/* Se duerme a esperar a que termine el ciclo */
 		int tiempo = t.getTiempo();
 		while(t.getTiempo() < tiempo + cicloIO){
@@ -34,9 +35,20 @@ public class Disco implements Runnable{
 		    }
 		    catch(InterruptedException ie){}
 		}		
+
 		/*El proceso esta listo para salir, queda de parte del planificador
 		 * de corto plazo darse cuenta */
 		acceso_disco = null;
+		synchronized (this){
+		    notifyAll();
+		}
+		System.out.println("hice notify");
+	    }
+	    else{
+		try{
+		    Thread.currentThread().sleep(200);
+		}
+		catch(InterruptedException ie){}
 	    }
 	}
     }	
@@ -58,11 +70,6 @@ public class Disco implements Runnable{
 	    return false;
     }
     
-    /* Procedimiento para despertar un proceso una vez que termina I/O */
-    private void wake_up(){
-	return;
-    }
-
     
     public void insertar_proceso(Proceso proceso){
 	colaBloqueados.add(proceso);
