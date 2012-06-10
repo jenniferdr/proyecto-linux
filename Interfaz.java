@@ -289,7 +289,7 @@ public class Interfaz {
 	//new PlanificadorCorto(t,1,disco,cajaCorto, cpu);
 
 	try {
-	    graficas();
+	    //graficas();
 	}	
 	catch (ArrayIndexOutOfBoundsException  e){}
     }

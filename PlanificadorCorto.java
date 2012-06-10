@@ -15,7 +15,7 @@ public class PlanificadorCorto implements Runnable{
     /* Por los momentos se colocara el quantum como un atributo que no cambia, 
      * para la siguiente entrega se realizaran los algoritmos que lo calculan para 
      * cada proceso */
-    int quantum = 100;
+    int quantum = 50;
     
     //Caja para pasar mensajes a la interfaz
     Caja caja;
@@ -44,15 +44,14 @@ public class PlanificadorCorto implements Runnable{
 	while(true) {
 	    int tiempo_actual = t.getTiempo();
 	    int tiempo_limite = tiempo_actual + quantum;
-	    System.out.println("TIEMPO LIMITEEE:::  "+tiempo_limite);
+	    
 	    while(t.getTiempo() < tiempo_limite)
 		cpu.usar_cpu(t);
 
 	    /*Cuando culmina su quantum ocurre "interrupción de reloj"*/
 	    
-	    /*llamada_sys_bloq(actual);
-	      disco_check.insertar(actual);*/
-	    System.out.println("CAMBIAR A OTRO PROCESOOO");
+	    llamada_sys_bloq(actual);
+	    disco_check.insertar(actual);
 	    
 	    actual = schedule();	    
 	}
@@ -82,11 +81,11 @@ public class PlanificadorCorto implements Runnable{
     } 
 
     private void cambio_proceso(Proceso prev, Proceso nuevo){
-	try{
-	    Thread.currentThread().sleep(100);
+	//try{
+	    //Thread.currentThread().sleep(100);
 	    cpu.set_proc(nuevo);
-	}
-	catch(InterruptedException ie){}
+	    //}
+	    //catch(InterruptedException ie){}
     }
 
     /*Algoritmo de balance de carga o rebalance_tick()*/
@@ -133,14 +132,19 @@ public class PlanificadorCorto implements Runnable{
 	}
 	
 	public void insertar(Proceso p){
-	    pendientes.add(p);
+	    this.pendientes.add(p);
+	    if(!pendientes.isEmpty())
+	    System.out.println("SE AGREGO PROC DC");
 	}
 	
 	public void run(){
 	    while (true){
-		while(pendientes.isEmpty()) {}
-		System.out.println("Hola!");
-		Proceso p = ((pendientes.isEmpty())  ? null : pendientes.get(0));
+		//System.out.println("Disco Checker");
+		
+		if(!(this.pendientes.isEmpty())){
+		    System.out.println("Hola!");
+	       
+		Proceso p = ((this.pendientes.isEmpty())  ? null : pendientes.get(0));
 		if (p != null){
 		    while (!(disco.termino_io(p))){
 			try{
@@ -152,10 +156,20 @@ public class PlanificadorCorto implements Runnable{
 		    }
 		    runqueue.insertar(p);
 			System.out.println("Saque al proceso" + p.getId());			
+		}else{
+		    try{
+			Thread.currentThread().sleep(200);
+		    }
+		    catch(InterruptedException ie){}
+		}
+		 }else{
+		try{
+		    Thread.currentThread().sleep(200);
+		}
+		catch(InterruptedException ie){}
 		}
 	    }
+	    
 	}
-
-	
     }       
 }

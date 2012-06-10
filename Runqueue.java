@@ -91,15 +91,15 @@ public class Runqueue{
     }
     
     
-    public Proceso escoger_proceso(){
+    public synchronized Proceso escoger_proceso(){
 	return arrays[activo].escoger_proceso();
     }
     
-    public void insertar(Proceso proc){
+    public synchronized void insertar(Proceso proc){
        arrays[activo].insertar(proc);
     }
 
-    public void insertar(Proceso proc, int pos){
+    public synchronized void insertar(Proceso proc, int pos){
 	 arrays[activo].insertar(proc,pos);
     }
 
