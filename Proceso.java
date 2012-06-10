@@ -51,6 +51,15 @@ public class Proceso {
 	this.prioridad = 0;
 	this.estado = null;
 	this.enCPU = -1;
+
+
+	this.tiempo_inicio = -1;
+	this.tiempo_final =  -1;
+	this.espera_IOini =  -1;
+	this.espera_IOacu =  -1;
+	this.espera_CPUini = -1;
+	this.espera_CPUacu = -1;
+	this.espera_total =  -1;
     }
 
     public Proceso(int id, int tiempo_llegada, int tiempo_espera, 
@@ -65,6 +74,15 @@ public class Proceso {
 	this.prio=0;
 	this.prioridad = 0;
 	this.enCPU = -1;
+
+	
+	this.tiempo_inicio = -1;
+	this.tiempo_final =  -1;
+	this.espera_IOini =  -1;
+	this.espera_IOacu =  0;
+	this.espera_CPUini = -1;
+	this.espera_CPUacu = 0;
+	this.espera_total =  0;
 	
     }
 
