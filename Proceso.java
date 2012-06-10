@@ -22,11 +22,22 @@ public class Proceso {
     private static final int MAX_SLEEP_AVG=70;
     private static final int MAX_BONUS=10;
     private int quantum;
+   
     // Estado: No estoy seguro si ponerlo aqui o representarlo  segun la cola en la que este //
     private String estado; 
     private int prioridad;
     private int enCPU;
+    
+    // Variables para estadisticas de tiempo
+    private int tiempo_inicio;
+    private int tiempo_final;
+    private int espera_IOini;
+    private int espera_IOacu;
+    private int espera_CPUini;
+    private int espera_CPUacu;
+    private int espera_total;
 
+    
     public Proceso() {
 	this.id = -1;
 	this.tiempo_llegada = -1;
@@ -138,6 +149,64 @@ public class Proceso {
     public void setEnCPU(int enCPU) {
 	this.enCPU = enCPU;
     }
+
+    public void setTiempo_inicio(int tiempoInicio) {
+	this.tiempo_inicio = tiempoInicio;
+    }
+
+    public int getTiempo_inicio(){
+	return this.tiempo_inicio;
+    }
+    
+    public void setTiempo_final(int tiempoFinal) {
+	this.tiempo_final = tiempoFinal;
+    }
+    
+    public int getTiempo_final(){
+	return this.tiempo_final;
+    }
+    
+    public void setEspera_IOini(int espera_IOini) {
+	this.espera_IOini = espera_IOini;
+    }
+
+    public int getEspera_IOini(){
+	return this.espera_IOini;
+    }
+    
+    public void setEspera_IOacu(int espera_IOacu) {
+	this.espera_IOacu = espera_IOacu;
+    }
+
+    public int getEspera_IOacu(){
+	return this.espera_IOacu;
+    }
+
+    public void setEspera_CPUini(int espera_CPUini) {
+	this.espera_CPUini = espera_CPUini;
+    }
+
+    public int getEspera_CPUini(){
+	return this.espera_CPUini;
+    }
+    
+    public void setEspera_CPUacu(int espera_CPUacu) {
+	this.espera_CPUacu = espera_CPUacu;
+    }
+
+    public int getEspera_CPUacu(){
+	return this.espera_CPUacu;
+    }
+
+    public void setEspera_total(int espera_total) {
+	this.espera_total = espera_total;
+    }
+
+    public int getEspera_total(){
+	return this.espera_total;
+    }
+
+
     
 }
 
