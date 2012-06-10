@@ -1,18 +1,77 @@
-import java.util.*;
-import java.io.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
+
+import java.util.Calendar;
+import java.util.Date;
+import org.jfree.chart.*;
+import org.jfree.data.*;
+import org.jfree.ui.*;
+import org.jfree.data.gantt.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JPanel;
+
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.DateTickMarkPosition;
+import org.jfree.chart.axis.SymbolAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.gantt.Task;
+import org.jfree.data.gantt.TaskSeries;
+import org.jfree.data.gantt.TaskSeriesCollection;
+import org.jfree.data.gantt.XYTaskDataset;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.Hour;
+import org.jfree.data.xy.IntervalXYDataset;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
+
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.data.gantt.Task;
+import org.jfree.data.gantt.TaskSeries;
+import org.jfree.data.gantt.TaskSeriesCollection;
+import org.jfree.data.gantt.XYTaskDataset;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.SimpleTimePeriod;
+import org.jfree.ui.RefineryUtilities;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 
 public class Interfaz {
 
     public static Caja cajaLargo;
     public static Caja cajaCorto;
     public static Caja cajaDisco;
-    
+    public static Caja1 CPU1;  
     private static Tiempo t;
+    public static Caja1 CPU2 ; 
     
     // aqui deberia ir donde se van a guardar los procesos
     static int nprocesos = -1;
@@ -172,7 +231,9 @@ public class Interfaz {
 	}
     }
 
-    private static void graficas(){
+
+    //private static void graficas(int p , int i, int fi, int n){
+      private static void graficas(){
 	JFrame f = new JFrame();
 	Container container = f.getContentPane();
 	container.setLayout(new GridBagLayout());
@@ -190,7 +251,7 @@ public class Interfaz {
 	c.weightx = 1.0; 
 	c.weighty = 0.0;
 
-	
+
 	JLabel mensajeCorto = new JLabel("");
 	container.add(mensajeCorto,c);
 	JLabel tiempo = new JLabel("");
@@ -215,7 +276,7 @@ public class Interfaz {
 		 c.gridx = 2;
 		 c.fill = GridBagConstraints.NONE;
 		 c.anchor = GridBagConstraints.CENTER;
-		 
+
 		 f.setVisible(true);
 		 container.remove(mensajeLargo);
 		 mensajeLargo = new JLabel(cajaLargo.pop());
@@ -227,17 +288,25 @@ public class Interfaz {
 	     c.fill = GridBagConstraints.NONE;
 	     c.gridwidth = GridBagConstraints.RELATIVE;
 	     c.anchor = GridBagConstraints.EAST;
-	     
+
 	     f.setVisible(true);
 	     container.remove(tiempo);
 	     tiempo = new JLabel(String.valueOf(t.getTiempo()));
 	     container.add(tiempo,c);
 	}
-	
-    }	
-    
+
+    }
+    private static void pruebas (){
+        int i=0;
+      
+      while(i< 10){  
+        CPU1.push(i, i*10 , i*10+2);
+       CPU2.push(i, i*10 , i*10+2);
+        i++;
+      }
+      
+    }
     public static void main (String args[]){
-	
 	try {
 	    
 	    if(args.length!= 1){
@@ -249,23 +318,47 @@ public class Interfaz {
 	    
 	} catch (Exception e) {
 	    System.err.println("Error al abrir el archivo");
-	    //e.printStackTrace();
+	    e.printStackTrace();
 	    
 	}
 
 	// Prueba de tiempo.
 
-	t = new Tiempo();
+        t = new Tiempo();
 	new Contador(t);
+            
 
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
 	cajaDisco = new Caja();
-	
+	CPU1 = new Caja1();
+        CPU2 = new Caja1();
 	Disco disco = new Disco(t);
 	new PlanificadorLargo(t,1,cajaLargo);
 	new PlanificadorCorto(t,1,disco,cajaCorto);
+        //pruebas de graficas
+        
+          pruebas();
+          nprocesos=10;
+          
+               Grafica cpu1 = new Grafica(
+                "Grafico CPU1", CPU1,nprocesos);
+        cpu1.pack();
+        RefineryUtilities.centerFrameOnScreen(cpu1);
+        cpu1.setVisible(true);
+        
+     Grafica cpu2 = new Grafica(
+              "Grafico CPU2",CPU2, nprocesos);
+     cpu1.pack();
+     RefineryUtilities.centerFrameOnScreen(cpu2);
+    
+     cpu2.setVisible(true);
+        
+            //graficas();
+    }
 
-	graficas();
-    }	
-}   
+    
+}
+
+
+        
