@@ -32,7 +32,7 @@ public class PlanificadorCorto implements Runnable{
 	this.disco = disco;
 	this.t=tiempo;
 	this.disco_check = new Disco_check(colaListosIO);
-	this.TIF_NEED_RESCHED= false;
+	this.NEED_RESCHED= false;
 	new Thread(this,"PlanificadorCorto").start();
     }
     
@@ -45,7 +45,7 @@ public class PlanificadorCorto implements Runnable{
 	
 	while(true) {
 	    // Sacar la rafaga del proceso
-	    int rafaga= actual.getRafaga(); 
+	    int rafaga=(actual!=null)?actual.getRafaga():retardo/2; 
 	    int tiempo_inicio = t.getTiempo();
 	    int tiempo_limiteQ = tiempo_inicio + quantum;
 	    int tiempo_limiteR= tiempo_inicio + rafaga;
@@ -54,19 +54,37 @@ public class PlanificadorCorto implements Runnable{
 		cpu.usar_cpu(t);
 		if(NEED_RESCHED)break;
 	    }
-	    si se agoto el quantum pero le queda tiempo de raf colocar expirados rellenar quantum 
-		se agoto el quantum y no queda raf: 1 si hay mas rafs ir a IO
-		                                    2 no hay mas matar proceso
-		no se agoto el quantum ni la rafaga mandar a activos
-	    // determinar el tiempo que corrio, actualizar quantum y sleep_avg
- 
-	    /*Cuando culmina su quantum ocurre "interrupción de reloj"*/
-	    /*Pero ahorita suponemos q requiere leer/escribir info del disco*/
+
+	    // Si no es la idle task..
 	    if(actual!=null){
-		this.runqueue.nr_iowait++;
-		llamada_sys_bloq(actual);
-		//disco_check.insertar(actual);
+		 // Se agota el quantum y casualmente tambien termina su rafaga actual
+		if(t.getTiempo()>=tiempo_limiteQ && t.getTiempo()>=tiempo_limiteR ){
+		    if(hayMasRafagas){
+			/* Como no ha terminado su ejecucion significa que requiere
+			   leer/escribir de disco y se encola alla */
+			this.runqueue.nr_iowait++;
+			llamada_sys_bloq(actual);
+		    }else{
+			// Si no quedan mas rafagas debe morir
+			// Se pueden modificar aqui sus datos antes de morir
+		    }
+		    /*Se agota el quantum pero no su rafaga actual */ 
+		}else if(t.getTiempo()>=tiempo_limiteQ){
+		    // mandar a expirados
+
+		 /*Se agota su rafaga actual pero no su quantum*/
+		}else if(t.getTiempo()>=tiempo_limiteR){
+		    //mandar a activos
+
+		 /*Solo fue vilmente expropiado*/
+		}else{
+		    // Va para activos 
+		}
 	    }
+
+	    // determinar el tiempo que corrio, actualizar quantum y sleep_avg
+
+	    // Pedir otro proceso para llevar a CPU
 	    actual = schedule();	    
 	}
     }
