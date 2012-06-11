@@ -16,7 +16,7 @@ public class Interfaz {
     public static Caja1 CPU1;
     public static Caja1 CPU2;
 
-    public static int muertos = 0;
+    public static ControlMatados muertos = new ControlMatados();
 
     private static Tiempo t;
     
@@ -245,9 +245,8 @@ public class Interfaz {
     public static void main (String args[]){
 	
 	try {
-	    
-	    if(args.length!= 2){
-		System.err.println("Uso: java proceso <nombre_ArchivoXML> <retardo>");
+	    if(args.length!= 1){
+		System.err.println("Uso: java proceso <nombre_ArchivoXML>");
 		System.exit(-1);
 	    }
 	    
@@ -257,8 +256,8 @@ public class Interfaz {
 	    System.err.println("Error al abrir el archivo");
 	    //e.printStackTrace();   
 	}
-	int retardo=10;
-	if (esNumero(args[1])) {
+	int retardo=200;
+	/*if (esNumero(args[1])) {
 	    retardo = Integer.parseInt(args[1]);
 	    if(retardo<=0){
 		System.err.println("El retardo debe ser entero positivo");
@@ -267,7 +266,7 @@ public class Interfaz {
 	}else{
 	    System.err.println("El retardo debe ser un numero entero positivo");
 	    System.exit(-1);
-	}
+	    }*/
 
 
 	// Prueba de tiempo.
@@ -279,7 +278,8 @@ public class Interfaz {
 	cajaDisco = new Caja();
 	cola_CPU1 = new Runqueue();
 	cola_CPU2 = new Runqueue();
-
+	CPU1= new Caja1();
+	CPU2= new Caja1();
 
 	CPU cpu = new CPU(1,cajaCorto,retardo); 
 	Runqueue runqueue = new Runqueue();
@@ -296,11 +296,26 @@ public class Interfaz {
 	new PlanificadorCorto(t,2,disco,CPU2, cpu,cola_CPU2,retardo,listosIO2,
 			      nprocesos,muertos);
 
-	
 	try {
 	    //graficas();
 	}	
 	catch (ArrayIndexOutOfBoundsException  e){}
+
+	while(muertos.matados!=nprocesos){
+	    try{
+		Thread.currentThread().sleep(retardo*nprocesos*2+1);
+	    }catch(InterruptedException ie){}
+	}
+
+	for(int i=0;i<nprocesos;i++){
+	    Proceso pptrueno = est_procesos[i];
+	    System.out.println("Proceso "+pptrueno.getId()+
+			     "   \n  tiempo de ejecucion: "+pptrueno.getTiempo_total()+
+			     "   \n  tiempo de espera CPU: "+pptrueno.getEspera_CPUacu()+
+			     "   \n  tiempo de espera IO: "+pptrueno.getEspera_IOacu()+
+			     "   \n  tiempo de espera total: "+pptrueno.getEspera_total());
+	    System.out.print("\n");
+	}
     }
 
 }   

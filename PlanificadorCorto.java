@@ -5,7 +5,7 @@ public class PlanificadorCorto implements Runnable{
     int retardo;
     int id;
     int nprocesos;
-    int heMatado;
+    ControlMatados heMatado;
     CPU cpu;
     boolean termine = false;
     /*Cola de listos que maneja cada planificador*/
@@ -27,7 +27,7 @@ public class PlanificadorCorto implements Runnable{
 
     public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja1 caja,CPU cpu,
 			     Runqueue runqueue,int retardo,Listos colaListosIO,
-			     int nprocesos,int heMatado){ 
+			     int nprocesos,ControlMatados heMatado){ 
 	this.id = id;
 	this.runqueue = runqueue;
 	this.cpu = cpu;
@@ -38,7 +38,7 @@ public class PlanificadorCorto implements Runnable{
 	this.disco_check = new Disco_check(colaListosIO);
 	this.NEED_RESCHED= false;
 	this.nprocesos = nprocesos;
-	this.heMatado = 0;
+	this.heMatado = heMatado;
 	new Thread(this,"PlanificadorCorto").start();
 	
     }
@@ -50,7 +50,7 @@ public class PlanificadorCorto implements Runnable{
     public void run(){
 	Proceso actual = schedule();
 	
-	while(heMatado<nprocesos) {
+	while(heMatado.matados<nprocesos) {
 	    // Sacar la rafaga del proceso
 	    int rafaga=(actual!=null)?actual.getRafaga():retardo/2; 
 	    int tiempo_inicio = t.getTiempo();
@@ -97,7 +97,7 @@ public class PlanificadorCorto implements Runnable{
 			
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
-			heMatado=heMatado+1;;
+			heMatado.matados=heMatado.matados+1;;
 			// tiempo en que se muere
 			int tiempoMorir = t.getTiempo();
 			actual.setTiempo_final(tiempoMorir);
@@ -153,7 +153,7 @@ public class PlanificadorCorto implements Runnable{
 			// Se pueden modificar aqui sus datos antes de morir
 			
 			System.out.println("\n ------\nEl proc "+actual.getId()+" acacba de morir en CPU"+id);
-			heMatado = heMatado+1;
+			heMatado.matados = heMatado.matados+1;
 			// tiempo en que se muere
 			int tiempoMorir1 = t.getTiempo();
 			actual.setTiempo_final(tiempoMorir1);
@@ -197,7 +197,7 @@ public class PlanificadorCorto implements Runnable{
 	    }
 
 	    // Pedir otro proceso para llevar a CPU
-	    System.out.println("Yo CPU"+id+" he matado "+heMatado+"  de "+nprocesos+" nro procesos");
+	    System.out.println("Yo CPU"+id+" he matado "+heMatado.matados+"  de "+nprocesos+" nro procesos");
 	    actual = schedule();	    
 	}
     }
