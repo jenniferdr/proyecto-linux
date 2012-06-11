@@ -62,6 +62,7 @@ public class PlanificadorCorto implements Runnable{
 		cpu.usar_cpu(t);
 		if(NEED_RESCHED)break;
 	    }
+	    NEED_RESCHED=false;
 	    int tiempo_final= t.getTiempo();
 	    // Si no es la idle task..
 	    if(actual!=null){
