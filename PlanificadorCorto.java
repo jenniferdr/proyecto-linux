@@ -20,12 +20,12 @@ public class PlanificadorCorto implements Runnable{
     int quantum=50;
     
     //Caja para pasar mensajes a la interfaz
-    Caja caja;
+    Caja1 caja;
 
     Disco_check disco_check;
     boolean NEED_RESCHED;
     
-    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,CPU cpu,
+    public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja1 caja,CPU cpu,
 			     Runqueue runqueue,int retardo,Listos colaListosIO,int nprocesos){ 
 	this.id = id;
 	this.runqueue = runqueue;
@@ -67,11 +67,12 @@ public class PlanificadorCorto implements Runnable{
 	    }
 	    NEED_RESCHED=false;
 	    int tiempo_final= t.getTiempo();
+	    
 	    // Si no es la idle task..
 	    if(actual!=null){
 		System.out.print("Se ejecuto el proceso "+actual.getId()+
 				 " desde:"+tiempo_inicio+" hasta: ");
-
+		caja.push(actual.getId(),tiempo_inicio,tiempo_final);
 		 // Se agota el quantum y casualmente tambien termina su rafaga actual
 		if(t.getTiempo()>=tiempo_limiteQ && t.getTiempo()>=tiempo_limiteR ){
 		    if(actual.quedanRafagas()){
