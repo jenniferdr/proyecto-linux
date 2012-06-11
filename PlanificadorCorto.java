@@ -65,10 +65,9 @@ public class PlanificadorCorto implements Runnable{
 
 	    while(t.getTiempo() < tiempo_limiteQ && t.getTiempo()<tiempo_limiteR){
 		cpu.usar_cpu(t);
-		if(NEED_RESCHED)break;}
-		
+		if(NEED_RESCHED)break;
+	    }
 	    NEED_RESCHED=false;
-	    
 	    int tiempo_final= t.getTiempo();
 	    // Si no es la idle task..
 	    if(actual!=null){
