@@ -84,7 +84,7 @@ public class PlanificadorLargo implements Runnable{
 	    
 	    try {
 	
-		Thread.sleep(1000);
+		Thread.sleep(100);
 	       
 	    } catch(InterruptedException e) {}
 	    
@@ -95,6 +95,15 @@ public class PlanificadorLargo implements Runnable{
 		//	System.exit(1);
 		if ( pos_Array_Proc < procesos.length){
 		    int cola_Ganadora = seleccionar_runqueue();
+
+		    // guardo el tiempo en el que fue creado el proceso
+		    // y como sera insertado en una runqueue entonces estara
+		    // esperando por CPU, asi que setteo tambien el tiempo de
+		    // de espera en CPU en el que comenzo a esperar
+
+		    int tiemp_aux = t.getTiempo();		    
+		    porCrearse.setTiempo_inicio(tiemp_aux);
+		    porCrearse.setEspera_CPUini(tiemp_aux);
 		    
 		    if (cola_Ganadora==1) {
 			porCrearse.setEnCPU(1);
@@ -128,7 +137,13 @@ public class PlanificadorLargo implements Runnable{
 			
 			    Proceso pr1 = (Proceso)  imprim1.get(ite1);
 			    System.out.println ("Soy el proc "+pr1.getId()+" y estoy en cpu "+pr1.getEnCPU());
-			
+			    
+			    
+			}
+
+			for(int ite2=0; ite2< procesos.length; ite2++) {
+			    Proceso pptrueno = procesos[ite2];
+			    System.out.println(" El proceso "+pptrueno.getId()+" tiene tiempo_ini = "+pptrueno.getTiempo_inicio());
 			}
 		    matarHilo=false;
 		    }
