@@ -4,9 +4,10 @@ public class PlanificadorCorto implements Runnable{
     Tiempo t;
     int retardo;
     int id;
-
+    int nprocesos;
+    int heMatado=1;
     CPU cpu;
-
+    boolean termine = false;
     /*Cola de listos que maneja cada planificador*/
     Runqueue runqueue;
 
@@ -25,7 +26,7 @@ public class PlanificadorCorto implements Runnable{
     boolean NEED_RESCHED;
     
     public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,CPU cpu,
-			     Runqueue runqueue,int retardo,Listos colaListosIO){ 
+			     Runqueue runqueue,int retardo,Listos colaListosIO,int nprocesos){ 
 	this.id = id;
 	this.runqueue = runqueue;
 	this.cpu = cpu;
@@ -35,7 +36,9 @@ public class PlanificadorCorto implements Runnable{
 	this.retardo=retardo;
 	this.disco_check = new Disco_check(colaListosIO);
 	this.NEED_RESCHED= false;
+	this.nprocesos = nprocesos;
 	new Thread(this,"PlanificadorCorto").start();
+	
     }
     
     /* Esto realmente no se hace en linux. En linux las llamadas al sistema 
@@ -45,7 +48,7 @@ public class PlanificadorCorto implements Runnable{
     public void run(){
 	Proceso actual = schedule();
 	
-	while(true) {
+	while(heMatado!=nprocesos) {
 	    // Sacar la rafaga del proceso
 	    int rafaga=(actual!=null)?actual.getRafaga():retardo/2; 
 	    int tiempo_inicio = t.getTiempo();
@@ -87,7 +90,7 @@ public class PlanificadorCorto implements Runnable{
 		    }else{
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
-
+			heMatado++;
 			// tiempo en que se muere
 			int tiempoMorir = t.getTiempo();
 			actual.setTiempo_final(tiempoMorir);
@@ -137,7 +140,7 @@ public class PlanificadorCorto implements Runnable{
 		    }else{
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
-			
+			heMatado++;
 			// tiempo en que se muere
 			int tiempoMorir1 = t.getTiempo();
 			actual.setTiempo_final(tiempoMorir1);
@@ -173,6 +176,7 @@ public class PlanificadorCorto implements Runnable{
 	    }
 
 	    // Pedir otro proceso para llevar a CPU
+	    System.out.println("He matado "+heMatado+" nro procesos "+nprocesos);
 	    actual = schedule();	    
 	}
     }
