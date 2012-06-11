@@ -16,7 +16,7 @@ public class Interfaz {
     public static Caja1 CPU1;
     public static Caja1 CPU2;
 
-    
+    public static int muertos = 0;
 
     private static Tiempo t;
     
@@ -291,10 +291,11 @@ public class Interfaz {
 
 	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
 	new PlanificadorCorto(t,1,disco,CPU1,cpu,cola_CPU1,retardo,listosIO1,
-			      nprocesos);
+			      nprocesos,muertos);
 
 	new PlanificadorCorto(t,2,disco,CPU2, cpu,cola_CPU2,retardo,listosIO2,
-			      nprocesos);
+			      nprocesos,muertos);
+
 	
 	try {
 	    //graficas();
