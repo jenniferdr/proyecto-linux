@@ -39,7 +39,7 @@ public class CPU {
 	    prev = proceso_actual;
 	}
 	try{
-	    Thread.currentThread().sleep(retardo-1); 
+	    Thread.currentThread().sleep(retardo); 
 	}
 	catch(InterruptedException ie){}
 	

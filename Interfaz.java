@@ -14,7 +14,7 @@ public class Interfaz {
     public static Runqueue cola_CPU1;
     public static Runqueue cola_CPU2;
 
-    
+    public static int muertos = 0;
 
     private static Tiempo t;
     
@@ -288,8 +288,8 @@ public class Interfaz {
 	Disco disco = new Disco(t,retardo,listosIO1,listosIO2);
 
 	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
-	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1,retardo,listosIO1,nprocesos);
-
+	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1,retardo,listosIO1,nprocesos,muertos);
+	new PlanificadorCorto(t,2,disco,cajaCorto,cpu,cola_CPU2,retardo,listosIO1,nprocesos,muertos);
 	//new PlanificadorCorto(t,2,disco,cajaCorto, cpu,cola_CPU2,retardo,listosIO2);
 	
 	try {

@@ -5,7 +5,7 @@ public class PlanificadorCorto implements Runnable{
     int retardo;
     int id;
     int nprocesos;
-    int heMatado=1;
+    int heMatado;
     CPU cpu;
     boolean termine = false;
     /*Cola de listos que maneja cada planificador*/
@@ -26,7 +26,8 @@ public class PlanificadorCorto implements Runnable{
     boolean NEED_RESCHED;
     
     public PlanificadorCorto(Tiempo tiempo, int id, Disco disco, Caja caja,CPU cpu,
-			     Runqueue runqueue,int retardo,Listos colaListosIO,int nprocesos){ 
+			     Runqueue runqueue,int retardo,Listos colaListosIO,
+			     int nprocesos,int heMatado){ 
 	this.id = id;
 	this.runqueue = runqueue;
 	this.cpu = cpu;
@@ -37,6 +38,7 @@ public class PlanificadorCorto implements Runnable{
 	this.disco_check = new Disco_check(colaListosIO);
 	this.NEED_RESCHED= false;
 	this.nprocesos = nprocesos;
+	this.heMatado = 0;
 	new Thread(this,"PlanificadorCorto").start();
 	
     }
@@ -48,7 +50,7 @@ public class PlanificadorCorto implements Runnable{
     public void run(){
 	Proceso actual = schedule();
 	
-	while(heMatado!=nprocesos) {
+	while(heMatado<nprocesos) {
 	    // Sacar la rafaga del proceso
 	    int rafaga=(actual!=null)?actual.getRafaga():retardo/2; 
 	    int tiempo_inicio = t.getTiempo();
@@ -89,14 +91,22 @@ public class PlanificadorCorto implements Runnable{
 			llamada_sys_bloq(actual);
 		    
 		    }else{
+
+
+			System.out.println("\n ------\nEl proc "+actual.getId()+" acacba de morir"+id);
+			
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
-			heMatado++;
+			heMatado=heMatado+1;;
 			// tiempo en que se muere
 			int tiempoMorir = t.getTiempo();
 			actual.setTiempo_final(tiempoMorir);
 			int tiempoTerminar = actual.getTiempo_final() - actual.getTiempo_inicio() ;
 			actual.setTiempo_total(tiempoTerminar);
+			int esperaTotal = actual.getEspera_CPUacu() + actual.getEspera_IOacu();
+			actual.setEspera_total(esperaTotal);
+			System.out.println("su tiempo total es:"+actual.getTiempo_total()+" el de espera "+actual.getEspera_total());
+			System.out.println("------------------------\n\n");
 		    }
 
 		    actual.setQuantumRestante(0);
@@ -141,10 +151,20 @@ public class PlanificadorCorto implements Runnable{
 		    }else{
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
-			heMatado++;
+			
+			System.out.println("\n ------\nEl proc "+actual.getId()+" acacba de morir en CPU"+id);
+			heMatado = heMatado+1;
 			// tiempo en que se muere
 			int tiempoMorir1 = t.getTiempo();
 			actual.setTiempo_final(tiempoMorir1);
+			int tiempoTerminar = actual.getTiempo_final() - actual.getTiempo_inicio() ;
+			actual.setTiempo_total(tiempoTerminar);
+			int esperaTotal = actual.getEspera_CPUacu() + actual.getEspera_IOacu();
+			actual.setEspera_total(esperaTotal);
+			
+			System.out.println("su tiempo total es:"+actual.getTiempo_total()+" el de espera "+actual.getEspera_total());
+			System.out.println("------------------------\n\n");
+
 
 		    }
 		    actual.setRafaga(0);
@@ -177,7 +197,7 @@ public class PlanificadorCorto implements Runnable{
 	    }
 
 	    // Pedir otro proceso para llevar a CPU
-	    System.out.println("He matado "+heMatado+" nro procesos "+nprocesos);
+	    System.out.println("Yo CPU"+id+" he matado "+heMatado+"  de "+nprocesos+" nro procesos");
 	    actual = schedule();	    
 	}
     }

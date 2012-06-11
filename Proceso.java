@@ -52,12 +52,12 @@ public class Proceso {
 	this.enCPU = -1;
 
 
-	this.tiempo_inicio = -1;
+	this.tiempo_inicio = 0;
 	this.tiempo_total = 0;
-	this.tiempo_final =  -1;
-	this.espera_IOini =  -1;
+	this.tiempo_final =  0;
+	this.espera_IOini =  0;
 	this.espera_IOacu =  0;
-	this.espera_CPUini = -1;
+	this.espera_CPUini = 0;
 	this.espera_CPUacu = 0;
 	this.espera_total =  0;
     }
@@ -76,12 +76,12 @@ public class Proceso {
 	this.enCPU = -1;
 
 	
-	this.tiempo_inicio = -1;
+	this.tiempo_inicio = 0;
 	this.tiempo_total = 0;
-	this.tiempo_final =  -1;
-	this.espera_IOini =  -1;
+	this.tiempo_final =  0;
+	this.espera_IOini =  0;
 	this.espera_IOacu =  0;
-	this.espera_CPUini = -1;
+	this.espera_CPUini = 0;
 	this.espera_CPUacu = 0;
 	this.espera_total =  0;
 	
