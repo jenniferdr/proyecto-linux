@@ -69,7 +69,15 @@ public class Interfaz {
     public static Caja cajaLargo;
     public static Caja cajaCorto;
     public static Caja cajaDisco;
+<<<<<<< HEAD
     public static Caja1 CPU1;  
+=======
+    public static Runqueue cola_CPU1;
+    public static Runqueue cola_CPU2;
+
+    
+
+>>>>>>> 38ab1edabe9d4ac0870969175459779323e6a14b
     private static Tiempo t;
     public static Caja1 CPU2 ; 
     
@@ -217,7 +225,7 @@ public class Interfaz {
 	     System.out.println("# de procesos: "+nprocesos);
 	
 	    for(int ii=0; ii<nprocesos;ii++) {
-		System.out.println("Proceso "+ii);
+		System.out.println("Proceso "+est_procesos[ii].getId());
 		System.out.println("    Tiempo llegada: "+est_procesos[ii].getTiempo_llegada());
 
 
@@ -309,8 +317,8 @@ public class Interfaz {
     public static void main (String args[]){
 	try {
 	    
-	    if(args.length!= 1){
-		System.err.println("Uso: java proceso <nombre_ArchivoXML>");
+	    if(args.length!= 2){
+		System.err.println("Uso: java proceso <nombre_ArchivoXML> <retardo>");
 		System.exit(-1);
 	    }
 	    
@@ -318,19 +326,40 @@ public class Interfaz {
 	    
 	} catch (Exception e) {
 	    System.err.println("Error al abrir el archivo");
+<<<<<<< HEAD
 	    e.printStackTrace();
 	    
+=======
+	    //e.printStackTrace();   
+	}
+	int retardo=10;
+	if (esNumero(args[1])) {
+	    retardo = Integer.parseInt(args[1]);
+	    if(retardo<=0){
+		System.err.println("El retardo debe ser entero positivo");
+		System.exit(-1);
+	    }
+	}else{
+	    System.err.println("El retardo debe ser un numero entero positivo");
+	    System.exit(-1);
+>>>>>>> 38ab1edabe9d4ac0870969175459779323e6a14b
 	}
 
-	// Prueba de tiempo.
 
+<<<<<<< HEAD
         t = new Tiempo();
 	new Contador(t);
             
+=======
+	// Prueba de tiempo.
+	t = new Tiempo();
+	new Contador(t,retardo);
+>>>>>>> 38ab1edabe9d4ac0870969175459779323e6a14b
 
 	cajaLargo = new Caja();	
 	cajaCorto = new Caja();	
 	cajaDisco = new Caja();
+<<<<<<< HEAD
 	CPU1 = new Caja1();
         CPU2 = new Caja1();
 	Disco disco = new Disco(t);
@@ -362,3 +391,29 @@ public class Interfaz {
 
 
         
+=======
+	cola_CPU1 = new Runqueue();
+	cola_CPU2 = new Runqueue();
+
+
+	CPU cpu = new CPU(1,cajaCorto,retardo); 
+	Runqueue runqueue = new Runqueue();
+
+	/*Colas de procesos que han salido de disco*/
+	Listos listosIO1= new Listos();
+	Listos listosIO2= new Listos();
+	Disco disco = new Disco(t,retardo,listosIO1,listosIO2);
+
+	new PlanificadorLargo(t,1,cajaLargo,cola_CPU1,cola_CPU2,est_procesos);
+	new PlanificadorCorto(t,1,disco,cajaCorto,cpu,cola_CPU1,retardo,listosIO1,nprocesos);
+
+	//new PlanificadorCorto(t,2,disco,cajaCorto, cpu,cola_CPU2,retardo,listosIO2);
+	
+	try {
+	    //graficas();
+	}	
+	catch (ArrayIndexOutOfBoundsException  e){}
+    }
+
+}   
+>>>>>>> 38ab1edabe9d4ac0870969175459779323e6a14b
