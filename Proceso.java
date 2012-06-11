@@ -37,6 +37,7 @@ public class Proceso {
     private int espera_CPUini;
     private int espera_CPUacu;
     private int espera_total;
+    private int tiempo_total;
 
     
     public Proceso() {
@@ -52,12 +53,13 @@ public class Proceso {
 
 
 	this.tiempo_inicio = -1;
+	this.tiempo_total = 0;
 	this.tiempo_final =  -1;
 	this.espera_IOini =  -1;
-	this.espera_IOacu =  -1;
+	this.espera_IOacu =  0;
 	this.espera_CPUini = -1;
-	this.espera_CPUacu = -1;
-	this.espera_total =  -1;
+	this.espera_CPUacu = 0;
+	this.espera_total =  0;
     }
 
     public Proceso(int id, int tiempo_llegada, int tiempo_espera, 
@@ -75,6 +77,7 @@ public class Proceso {
 
 	
 	this.tiempo_inicio = -1;
+	this.tiempo_total = 0;
 	this.tiempo_final =  -1;
 	this.espera_IOini =  -1;
 	this.espera_IOacu =  0;
@@ -211,6 +214,15 @@ public class Proceso {
     public int getTiempo_final(){
 	return this.tiempo_final;
     }
+
+    public void setTiempo_total(int tiempoTotal) {
+	this.tiempo_total = tiempoTotal;
+    }
+    
+    public int getTiempo_total(){
+	return this.tiempo_total;
+    }
+
     
     public void setEspera_IOini(int espera_IOini) {
 	this.espera_IOini = espera_IOini;

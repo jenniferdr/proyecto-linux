@@ -49,6 +49,12 @@ public class PlanificadorCorto implements Runnable{
 	    // Sacar la rafaga del proceso
 	    int rafaga=(actual!=null)?actual.getRafaga():retardo/2; 
 	    int tiempo_inicio = t.getTiempo();
+	    if(actual!= null){
+		int esperaEnd = tiempo_inicio - actual.getEspera_CPUini();
+		int acuEspera = actual.getEspera_CPUacu() + esperaEnd;
+		actual.setEspera_CPUacu(acuEspera);
+	    }
+
 	    int tiempo_limiteQ = tiempo_inicio + quantum;
 	    int tiempo_limiteR= tiempo_inicio + rafaga;
 
@@ -56,7 +62,6 @@ public class PlanificadorCorto implements Runnable{
 		cpu.usar_cpu(t);
 		if(NEED_RESCHED)break;
 	    }
-	    NEED_RESCHED=false;
 	    int tiempo_final= t.getTiempo();
 	    // Si no es la idle task..
 	    if(actual!=null){
@@ -68,18 +73,34 @@ public class PlanificadorCorto implements Runnable{
 		    if(actual.quedanRafagas()){
 			/* Como no ha terminado su ejecucion significa que requiere
 			   leer/escribir de disco y se encola alla */
+
+			// Como va a disco se guarda el tiempoActual
+			// para las estadisticas
+			int tiempoAuxiliar = t.getTiempo();
+			actual.setEspera_IOini(tiempoAuxiliar);
+			
+			
 			this.runqueue.nr_iowait++;
 			llamada_sys_bloq(actual);
+		    
 		    }else{
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
+
+			// tiempo en que se muere
+			int tiempoMorir = t.getTiempo();
+			actual.setTiempo_final(tiempoMorir);
+			int tiempoTerminar = actual.getTiempo_final() - actual.getTiempo_inicio() ;
+			actual.setTiempo_total(tiempoTerminar);
 		    }
+
 		    actual.setQuantumRestante(0);
 		    actual.setRafaga(0);
 		    actual.setSleep_avg(actual.getSleep_avg()-(tiempo_inicio
 							       -tiempo_limiteQ));
 		    System.out.println(""+tiempo_limiteQ);
-		  /*Se agota el quantum pero no su rafaga actual */ 
+		  
+		    /*Se agota el quantum pero no su rafaga actual */ 
 		}else if(t.getTiempo()>=tiempo_limiteQ){
 		    // Refill al quantum 
 		    actual.setQuantumRestante(quantum);
@@ -89,19 +110,37 @@ public class PlanificadorCorto implements Runnable{
 		    actual.setSleep_avg(actual.getSleep_avg()-(tiempo_inicio
 							       -tiempo_limiteQ));
 		    actual.effective_prio();
+		   
+		    // antes de ir a expirados se toma el tiempo
+		    // porque ahora empieza a esperar por CPU otra vez
+		    int tiempoAExpirado = t.getTiempo();
+		    actual.setEspera_CPUini(tiempoAExpirado);
+		    
 		    // Mandarlo a los expirados 
 		    runqueue.insertarExp(actual,actual.getPrioridad());
 		    System.out.println(""+tiempo_limiteQ);
+
 		 /*Se agota su rafaga actual pero no su quantum*/
 		}else if(t.getTiempo()>=tiempo_limiteR){
 		    if(actual.quedanRafagas()){
 			/* Como no ha terminado su ejecucion significa que requiere
 			   leer/escribir de disco y se encola alla */
+			
+			// Como va a disco se guarda el tiempoActual
+			// para las estadisticas
+			int tiempoAuxiliar1 = t.getTiempo();
+			actual.setEspera_IOini(tiempoAuxiliar1);
+			
 			this.runqueue.nr_iowait++;
 			llamada_sys_bloq(actual);
 		    }else{
 			// Si no quedan mas rafagas debe morir
 			// Se pueden modificar aqui sus datos antes de morir
+			
+			// tiempo en que se muere
+			int tiempoMorir1 = t.getTiempo();
+			actual.setTiempo_final(tiempoMorir1);
+
 		    }
 		    actual.setRafaga(0);
 		    actual.setQuantumRestante(actual.getQuantumRestante()
@@ -111,6 +150,8 @@ public class PlanificadorCorto implements Runnable{
 		    System.out.println(""+tiempo_limiteR);
 		 /*Solo fue vilmente expropiado*/
 		}else{
+
+		    
 		     actual.setRafaga(actual.getRafaga()-(tiempo_inicio
 							  -tiempo_final));
 		     actual.setQuantumRestante(actual.getQuantumRestante()
@@ -119,6 +160,12 @@ public class PlanificadorCorto implements Runnable{
 		     actual.setSleep_avg(actual.getSleep_avg()-(tiempo_inicio
 								-tiempo_limiteQ));
 		    actual.effective_prio();
+		    
+		    // Como vuelve al runqueque  entonces se debe guardar el
+		    // tiempo para luego saber cuanto tiempo esperara por CPU
+		    int tiempoExpropiado = t.getTiempo();
+		    actual.setEspera_CPUini(tiempoExpropiado);
+
 		    runqueue.insertar(actual,actual.getPrioridad());
 		    System.out.println(""+tiempo_final);
 		}
@@ -210,6 +257,10 @@ public class PlanificadorCorto implements Runnable{
 		p.effective_prio();
 		// Colocar proceso en la RunQueue
 		// (Si se le acabo su quantum igual se coloca alli)
+
+		int vuelveACola = t.getTiempo();
+		p.setEspera_CPUini(vuelveACola);
+
 		runqueue.insertar(p,p.getPrioridad());
 		runqueue.nr_iowait--;
 		/*Avisar que este proceso puede expropiar al CPU*/

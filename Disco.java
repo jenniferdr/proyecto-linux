@@ -34,6 +34,11 @@ public class Disco implements Runnable{
 
 		/* Se duerme a esperar a que termine el ciclo */
 		int tiempo = t.getTiempo();
+		int tiempoDisco = tiempo - acceso_disco.getEspera_IOini();
+		int acuEspera =  acceso_disco.getEspera_IOacu()+tiempoDisco;
+		acceso_disco.setEspera_IOacu(acuEspera);
+		
+
 		while(t.getTiempo() < tiempo + cicloIO){
 		    try{
 			Thread.currentThread().sleep(this.retardo*cicloIO);
